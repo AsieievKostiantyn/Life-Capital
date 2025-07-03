@@ -25,7 +25,10 @@
     "baseUrl": ".",
     "paths": {
       "@/app/*": ["src/app/*"],
-      "@/shared/*": ["src/shared/*"]
+      "@/shared/*": ["src/shared/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/static/*": ["src/static/*"],
+      "@/features/*": ["src/features/*"]
     }
   },
   "include": ["src"]

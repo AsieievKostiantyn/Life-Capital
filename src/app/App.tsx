@@ -1,8 +1,9 @@
-import { MantineProvider } from '@mantine/core';
-import '@mantine/core/styles.css';
+import { GuestPage } from '@/pages';
 
-const App = () => {
-  return <MantineProvider>Life Capital</MantineProvider>;
+export const App = () => {
+  return (
+    <>
+      <GuestPage />
+    </>
+  );
 };
-
-export default App;
