@@ -26,7 +26,7 @@
     "paths": {
       "@/app/*": ["src/app/*"],
       "@/shared/*": ["src/shared/*"],
-      "@/pages/*": ["src/pages/*"],
+      "@/pages": ["src/pages/index.ts"],
       "@/static/*": ["src/static/*"],
       "@/features/*": ["src/features/*"]
     }

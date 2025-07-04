@@ -1,11 +1,16 @@
 import { I18nProvider } from '@/features/i18n/context/I18nProvider';
+import { RouterProvider } from 'react-router-dom';
 
 import { MantineProvider } from '@mantine/core';
 
-export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+import { router } from './router';
+
+export const AppProvider = () => {
   return (
     <I18nProvider>
-      <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
+      <MantineProvider defaultColorScheme="dark">
+        <RouterProvider router={router} />
+      </MantineProvider>
     </I18nProvider>
   );
 };
