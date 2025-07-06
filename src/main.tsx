@@ -7,11 +7,15 @@ import '@mantine/notifications/styles.css';
 import { AppProvider } from '@/app/AppProvider';
 import '@/app/index.css';
 
+import { AuthProvider } from '@/features/auth';
+
 const root = document.getElementById('root') as HTMLElement;
 if (root) {
   createRoot(root).render(
     <StrictMode>
-      <AppProvider />
+      <AuthProvider>
+        <AppProvider />
+      </AuthProvider>
     </StrictMode>
   );
 }

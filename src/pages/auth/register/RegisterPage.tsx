@@ -12,12 +12,15 @@ import {
   TextInput,
 } from '@mantine/core';
 
+import { useAuth } from '@/features/auth';
+
 import { ROUTES } from '@/shared/router';
 
 import { GoogleButton } from '../components/GoogleButton';
 
 export const RegisterPage = () => {
   const intl = useIntl();
+  const { signInWithGoogle } = useAuth();
 
   return (
     <div className="max-w-110 w-full m-auto">
@@ -35,7 +38,9 @@ export const RegisterPage = () => {
         </Text>
 
         <Group grow mb="md" mt="md">
-          <GoogleButton radius="xl">Google</GoogleButton>
+          <GoogleButton radius="xl" onClick={signInWithGoogle}>
+            Google
+          </GoogleButton>
         </Group>
 
         <Divider
