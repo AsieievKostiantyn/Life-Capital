@@ -3,7 +3,16 @@
   "tabWidth": 2,
   "semi": true,
   "singleQuote": true,
-  "importOrder": ["^@[a-zA-Z](.*)$", "^@/app(.*)$", "^@/shared(.*)$", "^[./]"],
+  "importOrder": [
+    "^react",
+    "<THIRD_PARTY_MODULES>",
+    "^@/app(.*)$",
+    "^@/pages(.*)$",
+    "^@/features(.*)$",
+    "^@/shared(.*)$",
+    "^@/static(.*)$",
+    "^[./]"
+  ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "plugins": ["@trivago/prettier-plugin-sort-imports"]

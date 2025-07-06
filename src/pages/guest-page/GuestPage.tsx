@@ -1,22 +1,33 @@
-import { useI18n } from '@/features/i18n/context/useI18n';
-import GreatBritainFlag from '@/static/images/svg/gb.svg';
-import UkrainianFlag from '@/static/images/svg/ua.svg';
-import { Globe, Moon, Sun } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 
 import {
   ActionIcon,
   AppShell,
+  Button,
   Flex,
   Group,
   Image,
   Menu,
   useMantineColorScheme,
 } from '@mantine/core';
+import { Globe, Moon, Sun } from 'lucide-react';
+
+import { useI18n } from '@/features/i18n';
+
+import { ROUTES } from '@/shared/router';
+
+import GreatBritainFlag from '@/static/images/svg/gb.svg';
+import UkrainianFlag from '@/static/images/svg/ua.svg';
 
 export const GuestPage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const i18n = useI18n();
+  const navigate = useNavigate();
+
+  const navigateToLoginPage = () => {
+    navigate(ROUTES.LOGIN);
+  };
 
   return (
     <AppShell header={{ height: 60 }}>
@@ -27,14 +38,14 @@ export const GuestPage = () => {
               <FormattedMessage id="logo" />
             </h1>
           </div>
-          <Group gap="0">
+          <Group gap="8">
             <Menu shadow="md" width={150}>
               <Menu.Target>
                 <ActionIcon
                   variant="subtle"
                   color="gray"
                   radius="xl"
-                  size={48}
+                  size="xl"
                   aria-label="Select language"
                 >
                   <Globe size={24} />
@@ -58,12 +69,20 @@ export const GuestPage = () => {
               variant="subtle"
               color="gray"
               radius="xl"
-              size={48}
+              size="xl"
               onClick={toggleColorScheme}
               aria-label="Toggle color scheme"
             >
               {colorScheme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
             </ActionIcon>
+            <Button
+              variant="default"
+              radius="xl"
+              size="sm"
+              onClick={navigateToLoginPage}
+            >
+              <FormattedMessage id="button.signIn" />
+            </Button>
           </Group>
         </Flex>
       </AppShell.Header>

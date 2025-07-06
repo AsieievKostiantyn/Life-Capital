@@ -1,1 +1,2 @@
-export * from './guest-page/GuestPage';
+export * from './guest-page';
+export * from './auth';
