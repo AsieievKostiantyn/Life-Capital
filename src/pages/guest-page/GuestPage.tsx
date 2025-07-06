@@ -1,6 +1,8 @@
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
+import { Globe, Moon, Sun } from 'lucide-react';
+
 import {
   ActionIcon,
   AppShell,
@@ -11,12 +13,12 @@ import {
   Menu,
   useMantineColorScheme,
 } from '@mantine/core';
-import { Globe, Moon, Sun } from 'lucide-react';
 
 import { useI18n } from '@/features/i18n';
 
 import { ROUTES } from '@/shared/router';
 
+import GermanFlag from '@/static/images/svg/de.svg';
 import GreatBritainFlag from '@/static/images/svg/gb.svg';
 import UkrainianFlag from '@/static/images/svg/ua.svg';
 
@@ -60,6 +62,11 @@ export const GuestPage = () => {
                 <Menu.Item onClick={() => i18n?.setLocale('en')}>
                   <Flex align="center" gap={5}>
                     <Image w={14} h={10} src={GreatBritainFlag} /> English
+                  </Flex>
+                </Menu.Item>
+                <Menu.Item onClick={() => i18n?.setLocale('de')}>
+                  <Flex align="center" gap={5}>
+                    <Image w={14} h={10} src={GermanFlag} /> Deutsch
                   </Flex>
                 </Menu.Item>
               </Menu.Dropdown>

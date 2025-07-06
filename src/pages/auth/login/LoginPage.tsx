@@ -1,3 +1,4 @@
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import {
@@ -17,8 +18,10 @@ import { ROUTES } from '@/shared/router';
 import { GoogleButton } from '../components/GoogleButton';
 
 export const LoginPage = () => {
+  const intl = useIntl();
+
   return (
-    <div className="max-w-100 w-full m-auto">
+    <div className="max-w-110 w-full m-auto">
       <Paper
         withBorder
         shadow="md"
@@ -28,7 +31,8 @@ export const LoginPage = () => {
         aria-label="Login form"
       >
         <Text size="lg" fw={500}>
-          Welcome back, continue with
+          <FormattedMessage id="auth.welcome" />!{' '}
+          <FormattedMessage id="auth.continueWith" />
         </Text>
 
         <Group grow mb="md" mt="md">
@@ -36,7 +40,7 @@ export const LoginPage = () => {
         </Group>
 
         <Divider
-          label="Or continue with email"
+          label={intl.formatMessage({ id: 'auth.continueWithEmail' })}
           labelPosition="center"
           my="lg"
         />
@@ -50,17 +54,22 @@ export const LoginPage = () => {
             />
 
             <PasswordInput
-              label="Password"
-              placeholder="Your password"
+              label={intl.formatMessage({ id: 'auth.password.label' })}
+              placeholder={intl.formatMessage({
+                id: 'auth.password.placeholder',
+              })}
               radius="md"
             />
             <Group justify="space-between">
-              <Checkbox label="Keep me logged in" size="sm" />
+              <Checkbox
+                label={intl.formatMessage({ id: 'auth.keepLoggedIn' })}
+                size="sm"
+              />
               <Link
                 to={ROUTES.PASSWORD_RECOVERY}
                 className="text-sm text-(--mantine-color-anchor) hover:underline"
               >
-                Forgot password?
+                <FormattedMessage id="auth.forgotPassword.link" />
               </Link>
             </Group>
           </Stack>
@@ -70,10 +79,10 @@ export const LoginPage = () => {
               to={ROUTES.REGISTER}
               className="text-(--mantine-color-dimmed) text-[12px] hover:underline"
             >
-              Don&apos;t have an account? Create account
+              <FormattedMessage id="auth.resetPassword.backToLogin" />
             </Link>
             <Button type="submit" radius="xl">
-              Sign In
+              <FormattedMessage id="button.signIn" />
             </Button>
           </Group>
         </form>

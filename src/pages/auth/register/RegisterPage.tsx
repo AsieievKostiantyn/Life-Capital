@@ -1,3 +1,4 @@
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import {
@@ -16,8 +17,10 @@ import { ROUTES } from '@/shared/router';
 import { GoogleButton } from '../components/GoogleButton';
 
 export const RegisterPage = () => {
+  const intl = useIntl();
+
   return (
-    <div className="max-w-100 w-full m-auto">
+    <div className="max-w-110 w-full m-auto">
       <Paper
         withBorder
         shadow="md"
@@ -27,7 +30,8 @@ export const RegisterPage = () => {
         aria-label="Register form"
       >
         <Text size="lg" fw={500}>
-          Welcome, continue with
+          <FormattedMessage id="auth.welcome" />!{' '}
+          <FormattedMessage id="auth.continueWith" />
         </Text>
 
         <Group grow mb="md" mt="md">
@@ -35,14 +39,20 @@ export const RegisterPage = () => {
         </Group>
 
         <Divider
-          label="Or continue with email"
+          label={intl.formatMessage({ id: 'auth.continueWithEmail' })}
           labelPosition="center"
           my="lg"
         />
 
         <form>
           <Stack>
-            <TextInput label="Nickname" placeholder="Peter" radius="md" />
+            <TextInput
+              label={intl.formatMessage({ id: 'auth.nickname.label' })}
+              placeholder={intl.formatMessage({
+                id: 'auth.nickName.placeholder',
+              })}
+              radius="md"
+            />
 
             <TextInput
               label="Email"
@@ -51,8 +61,10 @@ export const RegisterPage = () => {
             />
 
             <PasswordInput
-              label="Password"
-              placeholder="Your password"
+              label={intl.formatMessage({ id: 'auth.password.label' })}
+              placeholder={intl.formatMessage({
+                id: 'auth.password.placeholder',
+              })}
               radius="md"
             />
           </Stack>
@@ -62,10 +74,10 @@ export const RegisterPage = () => {
               to={ROUTES.LOGIN}
               className="text-(--mantine-color-dimmed) text-[12px] hover:underline"
             >
-              Already have an account? Log in now
+              <FormattedMessage id="auth.alreadyHaveAccount" />
             </Link>
             <Button type="submit" radius="xl">
-              Sign Up
+              <FormattedMessage id="auth.signUp" />
             </Button>
           </Group>
         </form>

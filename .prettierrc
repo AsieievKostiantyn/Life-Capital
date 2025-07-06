@@ -5,6 +5,7 @@
   "singleQuote": true,
   "importOrder": [
     "^react",
+    "^[a-zA-Z]",
     "<THIRD_PARTY_MODULES>",
     "^@/app(.*)$",
     "^@/pages(.*)$",

@@ -1,4 +1,7 @@
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+
+import { MoveLeft } from 'lucide-react';
 
 import {
   Button,
@@ -9,13 +12,12 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { MoveLeft } from 'lucide-react';
 
 import { ROUTES } from '@/shared/router';
 
 export const PasswordRecoveryPage = () => {
   return (
-    <div className="max-w-100 w-full m-auto">
+    <div className="max-w-125 w-full m-auto">
       <Paper
         withBorder
         shadow="md"
@@ -25,23 +27,26 @@ export const PasswordRecoveryPage = () => {
         aria-label="Recovery password form"
       >
         <Text size="lg" fw={500} ta="center">
-          Forgot your password?
+          <FormattedMessage id="auth.resetPassword.title" />
         </Text>
         <Text c="dimmed" fz="sm" ta="center">
-          Enter your email to get a reset link
+          <FormattedMessage id="auth.resetPassword.instruction" />
         </Text>
         <Divider my="sm" />
-        <TextInput label="Your email" placeholder="hello@gmail.com" />
+        <TextInput label="Email" placeholder="hello@gmail.com" radius="md" />
         <Group justify="space-between" mt="lg">
           <Link
             to={ROUTES.LOGIN}
             className="text-(--mantine-color-dimmed) text-[12px] hover:underline"
           >
             <Flex align="center" gap={3}>
-              <MoveLeft size={8} /> Back to the login page
+              <MoveLeft size={8} />{' '}
+              <FormattedMessage id="auth.resetPassword.backToLogin" />
             </Flex>
           </Link>
-          <Button>Reset password</Button>
+          <Button radius="xl">
+            <FormattedMessage id="auth.resetPassword.button" />
+          </Button>
         </Group>
       </Paper>
     </div>
