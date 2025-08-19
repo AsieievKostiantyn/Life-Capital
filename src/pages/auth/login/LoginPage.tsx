@@ -69,6 +69,9 @@ export const LoginPage = () => {
               <Checkbox
                 label={intl.formatMessage({ id: 'auth.keepLoggedIn' })}
                 size="sm"
+                styles={{
+                  input: { cursor: 'pointer' },
+                }}
               />
               <Link
                 to={ROUTES.PASSWORD_RECOVERY}
@@ -84,7 +87,7 @@ export const LoginPage = () => {
               to={ROUTES.REGISTER}
               className="text-(--mantine-color-dimmed) text-[12px] hover:underline"
             >
-              <FormattedMessage id="auth.resetPassword.backToLogin" />
+              <FormattedMessage id="auth.noAccount" />
             </Link>
             <Button type="submit" radius="xl">
               <FormattedMessage id="button.signIn" />

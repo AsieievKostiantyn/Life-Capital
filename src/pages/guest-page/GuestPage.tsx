@@ -1,7 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
-import { signOut } from 'firebase/auth';
 import { Globe, Moon, Sun } from 'lucide-react';
 
 import {
@@ -17,7 +16,6 @@ import {
 
 import { useI18n } from '@/features/i18n';
 
-import { auth } from '@/shared/firebase';
 import { ROUTES } from '@/shared/router';
 
 import GermanFlag from '@/static/images/svg/de.svg';
@@ -47,7 +45,7 @@ export const GuestPage = () => {
               <Menu.Target>
                 <ActionIcon
                   variant="subtle"
-                  color="gray"
+                  color={colorScheme === 'dark' ? '#ffffff' : '#000000'}
                   radius="xl"
                   size="xl"
                   aria-label="Select language"
@@ -76,7 +74,7 @@ export const GuestPage = () => {
 
             <ActionIcon
               variant="subtle"
-              color="gray"
+              color={colorScheme === 'dark' ? '#ffffff' : '#000000'}
               radius="xl"
               size="xl"
               onClick={toggleColorScheme}
@@ -92,7 +90,6 @@ export const GuestPage = () => {
             >
               <FormattedMessage id="button.signIn" />
             </Button>
-            <Button onClick={() => signOut(auth)}> sign out</Button>
           </Group>
         </Flex>
       </AppShell.Header>

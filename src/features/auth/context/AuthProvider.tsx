@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react';
 
 import { FirebaseError } from 'firebase/app';
-import { type User, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import {
+  type User,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut as signOutFirebase,
+} from 'firebase/auth';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { showNotification } from '@mantine/notifications';
 
-import { auth, provider } from '@/shared/firebase';
+import { auth, db, provider } from '@/shared/firebase';
 
 import { AuthContext } from './AuthContext';
 
@@ -52,12 +60,43 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const signIn = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const signOut = async () => {
+    await signOutFirebase(auth);
+  };
+
+  const register = async (
+    email: string,
+    password: string,
+    displayName: string
+  ) => {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    await setDoc(doc(db, 'users', userCredential.user.uid), {
+      uid: userCredential.user.uid,
+      email,
+      displayName,
+      role: 'player',
+      createdAt: serverTimestamp(),
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isLoading,
         signInWithGoogle,
+        signIn,
+        signOut,
+        register,
       }}
     >
       {children}
