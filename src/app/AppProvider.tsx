@@ -9,12 +9,12 @@ import { RouterGuard } from './RouterGuard';
 export const AppProvider = () => {
   return (
     <MantineProvider defaultColorScheme="dark">
-      <AuthProvider>
-        <I18nProvider>
-          <Notifications position="top-center" autoClose={4000} />
+      <I18nProvider>
+        <AuthProvider>
+          <Notifications position="top-right" autoClose={6000} />
           <RouterGuard />
-        </I18nProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </I18nProvider>
     </MantineProvider>
   );
 };

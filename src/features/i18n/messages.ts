@@ -25,6 +25,14 @@ export const messages = {
     'auth.resetPassword.instruction': 'Enter your email to get a reset link',
     'auth.resetPassword.backToLogin': 'Back to the login page',
     'auth.resetPassword.button': 'Reset password',
+
+    'auth.error.invalidEmail': 'Invalid email format',
+    'auth.error.userNotFound': 'User not found',
+    'auth.error.invalidPassword': 'Incorrect password',
+    'auth.error.tooManyAttempts': 'Too many attempts, please try again later',
+    'auth.error.emailExists': 'This email is already registered',
+    'auth.error.weakPassword': 'Password is too weak',
+    'auth.error.unknown': 'Something went wrong, please try again',
   },
   [LOCALES.UKRAINIAN]: {
     logo: 'Життєвий капітал',
@@ -54,6 +62,14 @@ export const messages = {
       'Введіть почту, щоб отримати посилання для відновлення',
     'auth.resetPassword.backToLogin': 'Повернутися до сторінки входу',
     'auth.resetPassword.button': 'Відновити пароль',
+
+    'auth.error.invalidEmail': 'Неправильний формат email',
+    'auth.error.userNotFound': 'Користувача не знайдено',
+    'auth.error.invalidPassword': 'Невірний пароль',
+    'auth.error.tooManyAttempts': 'Забагато спроб, спробуйте пізніше',
+    'auth.error.emailExists': 'Ця електронна адреса вже зареєстрована',
+    'auth.error.weakPassword': 'Пароль занадто простий',
+    'auth.error.unknown': 'Щось пішло не так, спробуйте, будь ласка, ще раз',
   },
   [LOCALES.GERMAN]: {
     logo: 'Life Capital',
@@ -84,5 +100,15 @@ export const messages = {
       'Geben Sie Ihre E-Mail ein, um einen Zurücksetzungslink zu erhalten',
     'auth.resetPassword.backToLogin': 'Zurück zur Anmeldeseite',
     'auth.resetPassword.button': 'Passwort zurücksetzen',
+
+    'auth.error.invalidEmail': 'Ungültiges E-Mail-Format',
+    'auth.error.userNotFound': 'Benutzer nicht gefunden',
+    'auth.error.invalidPassword': 'Falsches Passwort',
+    'auth.error.tooManyAttempts':
+      'Zu viele Versuche, bitte später erneut versuchen',
+    'auth.error.emailExists': 'Diese E-Mail-Adresse ist bereits registriert',
+    'auth.error.weakPassword': 'Das Passwort ist zu schwach',
+    'auth.error.unknown':
+      'Etwas ist schiefgelaufen, bitte versuchen Sie es erneut',
   },
 };

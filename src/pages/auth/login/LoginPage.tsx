@@ -1,3 +1,4 @@
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -19,9 +20,26 @@ import { ROUTES } from '@/shared/router';
 
 import { GoogleButton } from '../components/GoogleButton';
 
+interface LoginPageData {
+  email: string;
+  password: string;
+}
+
 export const LoginPage = () => {
   const intl = useIntl();
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, signIn } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm<LoginPageData>();
+
+  const onSubmitLoginForm: SubmitHandler<LoginPageData> = (data) => {
+    signIn(data.email, data.password);
+    reset();
+  };
 
   return (
     <div className="max-w-110 w-full m-auto">
@@ -50,12 +68,21 @@ export const LoginPage = () => {
           my="lg"
         />
 
-        <form>
+        <form onSubmit={handleSubmit(onSubmitLoginForm)}>
           <Stack>
             <TextInput
               label="Email"
               placeholder="hello@gmail.com"
               radius="md"
+              error={errors.email?.message}
+              {...register('email', {
+                required: 'Email обов`язковий.',
+                pattern: {
+                  value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                  message: 'Невірний формат email.',
+                },
+              })}
+              onChange={() => clearErrors('email')}
             />
 
             <PasswordInput
@@ -64,6 +91,15 @@ export const LoginPage = () => {
                 id: 'auth.password.placeholder',
               })}
               radius="md"
+              error={errors.password?.message}
+              {...register('password', {
+                required: 'Пароль обов`язковий.',
+                minLength: {
+                  value: 8,
+                  message: 'Пароль повинен містити мінімум 8 символів.',
+                },
+              })}
+              onChange={() => clearErrors('password')}
             />
             <Group justify="space-between">
               <Checkbox

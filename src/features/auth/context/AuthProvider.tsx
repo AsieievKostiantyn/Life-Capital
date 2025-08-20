@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
 
 import { FirebaseError } from 'firebase/app';
 import {
@@ -15,6 +16,7 @@ import { showNotification } from '@mantine/notifications';
 
 import { auth, db, provider } from '@/shared/firebase';
 
+import { firebaseAuthErrorsHandler } from '../utils';
 import { AuthContext } from './AuthContext';
 
 interface AuthProviderProps {
@@ -24,6 +26,25 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const intl = useIntl();
+
+  const showErrorNotification = (error: unknown) => {
+    if (error instanceof FirebaseError) {
+      showNotification({
+        title: 'Authentication Error',
+        message: intl.formatMessage({
+          id: firebaseAuthErrorsHandler(error.code),
+        }),
+        color: 'red',
+      });
+    } else {
+      showNotification({
+        title: 'Unknown Error',
+        message: 'Something went wrong',
+        color: 'red',
+      });
+    }
+  };
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (user) => {
@@ -42,26 +63,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const result = await signInWithPopup(auth, provider);
       setUser(result.user);
     } catch (error) {
-      if (error instanceof FirebaseError) {
-        showNotification({
-          title: 'Authentication Error',
-          message: error.code,
-          color: 'red',
-        });
-      } else {
-        showNotification({
-          title: 'Unknown Error',
-          message: 'Something went wrong',
-          color: 'red',
-        });
-      }
+      showErrorNotification(error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      showErrorNotification(error);
+    }
   };
 
   const signOut = async () => {
@@ -73,19 +86,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     password: string,
     displayName: string
   ) => {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    await setDoc(doc(db, 'users', userCredential.user.uid), {
-      uid: userCredential.user.uid,
-      email,
-      displayName,
-      role: 'player',
-      createdAt: serverTimestamp(),
-    });
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        uid: userCredential.user.uid,
+        email,
+        displayName,
+        role: 'player',
+        createdAt: serverTimestamp(),
+      });
+    } catch (error) {
+      showErrorNotification(error);
+    }
   };
 
   return (

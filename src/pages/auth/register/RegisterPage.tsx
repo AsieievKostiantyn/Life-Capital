@@ -1,3 +1,4 @@
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -18,9 +19,27 @@ import { ROUTES } from '@/shared/router';
 
 import { GoogleButton } from '../components/GoogleButton';
 
+interface RegisterPageData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 export const RegisterPage = () => {
   const intl = useIntl();
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, register: registerUser } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    clearErrors,
+  } = useForm<RegisterPageData>();
+
+  const onSubmitRegisterPageData: SubmitHandler<RegisterPageData> = (data) => {
+    registerUser(data.email, data.password, data.name);
+    reset();
+  };
 
   return (
     <div className="max-w-110 w-full m-auto">
@@ -49,7 +68,7 @@ export const RegisterPage = () => {
           my="lg"
         />
 
-        <form>
+        <form onSubmit={handleSubmit(onSubmitRegisterPageData)}>
           <Stack>
             <TextInput
               label={intl.formatMessage({ id: 'auth.nickname.label' })}
@@ -57,12 +76,30 @@ export const RegisterPage = () => {
                 id: 'auth.nickName.placeholder',
               })}
               radius="md"
+              error={errors.name?.message}
+              {...register('name', {
+                required: "Ім’я користувача обов'язкове.",
+                minLength: {
+                  value: 3,
+                  message: 'Ім’я має містити щонайменше 3 символи.',
+                },
+              })}
+              onChange={() => clearErrors('name')}
             />
 
             <TextInput
               label="Email"
               placeholder="hello@gmail.com"
               radius="md"
+              error={errors.email?.message}
+              {...register('email', {
+                required: 'Email обов`язковий.',
+                pattern: {
+                  value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                  message: 'Невірний формат email.',
+                },
+              })}
+              onChange={() => clearErrors('email')}
             />
 
             <PasswordInput
@@ -71,6 +108,15 @@ export const RegisterPage = () => {
                 id: 'auth.password.placeholder',
               })}
               radius="md"
+              error={errors.password?.message}
+              {...register('password', {
+                required: 'Пароль обов`язковий.',
+                minLength: {
+                  value: 8,
+                  message: 'Пароль повинен містити мінімум 8 символів.',
+                },
+              })}
+              onChange={() => clearErrors('password')}
             />
           </Stack>
 
