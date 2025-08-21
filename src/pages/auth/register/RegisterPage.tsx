@@ -1,4 +1,8 @@
-import { type SubmitHandler, useForm } from 'react-hook-form';
+import {
+  type SubmitErrorHandler,
+  type SubmitHandler,
+  useForm,
+} from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -34,11 +38,18 @@ export const RegisterPage = () => {
     formState: { errors },
     reset,
     clearErrors,
+    setValue,
   } = useForm<RegisterPageData>();
 
-  const onSubmitRegisterPageData: SubmitHandler<RegisterPageData> = (data) => {
+  const onSubmit: SubmitHandler<RegisterPageData> = (data) => {
     registerUser(data.email, data.password, data.name);
     reset();
+  };
+
+  const onError: SubmitErrorHandler<RegisterPageData> = () => {
+    Object.keys(errors).forEach((field) => {
+      setValue(field as keyof RegisterPageData, '');
+    });
   };
 
   return (
@@ -68,7 +79,7 @@ export const RegisterPage = () => {
           my="lg"
         />
 
-        <form onSubmit={handleSubmit(onSubmitRegisterPageData)}>
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
           <Stack>
             <TextInput
               label={intl.formatMessage({ id: 'auth.nickname.label' })}
@@ -78,10 +89,14 @@ export const RegisterPage = () => {
               radius="md"
               error={errors.name?.message}
               {...register('name', {
-                required: "Ім’я користувача обов'язкове.",
+                required: intl.formatMessage({
+                  id: 'auth.inputError.nameIsRequired',
+                }),
                 minLength: {
                   value: 3,
-                  message: 'Ім’я має містити щонайменше 3 символи.',
+                  message: intl.formatMessage({
+                    id: 'auth.inputError.nameLength',
+                  }),
                 },
               })}
               onChange={() => clearErrors('name')}
@@ -93,10 +108,14 @@ export const RegisterPage = () => {
               radius="md"
               error={errors.email?.message}
               {...register('email', {
-                required: 'Email обов`язковий.',
+                required: intl.formatMessage({
+                  id: 'auth.inputError.emailIsRequired',
+                }),
                 pattern: {
                   value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-                  message: 'Невірний формат email.',
+                  message: intl.formatMessage({
+                    id: 'auth.inputError.wrongEmailFormat',
+                  }),
                 },
               })}
               onChange={() => clearErrors('email')}
@@ -110,10 +129,14 @@ export const RegisterPage = () => {
               radius="md"
               error={errors.password?.message}
               {...register('password', {
-                required: 'Пароль обов`язковий.',
+                required: intl.formatMessage({
+                  id: 'auth.inputError.passwordIsRequired',
+                }),
                 minLength: {
                   value: 8,
-                  message: 'Пароль повинен містити мінімум 8 символів.',
+                  message: intl.formatMessage({
+                    id: 'auth.inputError.passwordLength',
+                  }),
                 },
               })}
               onChange={() => clearErrors('password')}

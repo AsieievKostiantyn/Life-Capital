@@ -1,4 +1,8 @@
-import { type SubmitHandler, useForm } from 'react-hook-form';
+import {
+  type SubmitErrorHandler,
+  type SubmitHandler,
+  useForm,
+} from 'react-hook-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -34,11 +38,18 @@ export const LoginPage = () => {
     formState: { errors },
     clearErrors,
     reset,
+    setValue,
   } = useForm<LoginPageData>();
 
-  const onSubmitLoginForm: SubmitHandler<LoginPageData> = (data) => {
+  const onSubmit: SubmitHandler<LoginPageData> = (data) => {
     signIn(data.email, data.password);
     reset();
+  };
+
+  const onError: SubmitErrorHandler<LoginPageData> = () => {
+    Object.keys(errors).forEach((field) => {
+      setValue(field as keyof LoginPageData, '');
+    });
   };
 
   return (
@@ -68,7 +79,7 @@ export const LoginPage = () => {
           my="lg"
         />
 
-        <form onSubmit={handleSubmit(onSubmitLoginForm)}>
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
           <Stack>
             <TextInput
               label="Email"
@@ -76,10 +87,14 @@ export const LoginPage = () => {
               radius="md"
               error={errors.email?.message}
               {...register('email', {
-                required: 'Email обов`язковий.',
+                required: intl.formatMessage({
+                  id: 'auth.inputError.emailIsRequired',
+                }),
                 pattern: {
                   value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-                  message: 'Невірний формат email.',
+                  message: intl.formatMessage({
+                    id: 'auth.inputError.wrongEmailFormat',
+                  }),
                 },
               })}
               onChange={() => clearErrors('email')}
@@ -93,10 +108,14 @@ export const LoginPage = () => {
               radius="md"
               error={errors.password?.message}
               {...register('password', {
-                required: 'Пароль обов`язковий.',
+                required: intl.formatMessage({
+                  id: 'auth.inputError.passwordIsRequired',
+                }),
                 minLength: {
                   value: 8,
-                  message: 'Пароль повинен містити мінімум 8 символів.',
+                  message: intl.formatMessage({
+                    id: 'auth.inputError.passwordLength',
+                  }),
                 },
               })}
               onChange={() => clearErrors('password')}

@@ -93,15 +93,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         password
       );
 
-      await setDoc(doc(db, 'users', userCredential.user.uid), {
-        uid: userCredential.user.uid,
-        email,
-        displayName,
-        role: 'player',
-        createdAt: serverTimestamp(),
-      });
-    } catch (error) {
-      showErrorNotification(error);
+      try {
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          uid: userCredential.user.uid,
+          email,
+          displayName,
+          role: 'player',
+          createdAt: serverTimestamp(),
+        });
+      } catch (dbError) {
+        console.error('User created, but profile not saved to DB.', dbError); //
+      }
+    } catch (authError) {
+      showErrorNotification(authError);
     }
   };
 

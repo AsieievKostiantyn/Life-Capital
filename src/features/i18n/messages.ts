@@ -33,6 +33,14 @@ export const messages = {
     'auth.error.emailExists': 'This email is already registered',
     'auth.error.weakPassword': 'Password is too weak',
     'auth.error.unknown': 'Something went wrong, please try again',
+
+    'auth.inputError.nameIsRequired': 'Username is required',
+    'auth.inputError.nameLength': 'Username must be at least 3 characters long',
+    'auth.inputError.emailIsRequired': 'Email is required',
+    'auth.inputError.wrongEmailFormat': 'Invalid email format',
+    'auth.inputError.passwordIsRequired': 'Password is required',
+    'auth.inputError.passwordLength':
+      'Password must be at least 8 characters long',
   },
   [LOCALES.UKRAINIAN]: {
     logo: 'Життєвий капітал',
@@ -70,6 +78,14 @@ export const messages = {
     'auth.error.emailExists': 'Ця електронна адреса вже зареєстрована',
     'auth.error.weakPassword': 'Пароль занадто простий',
     'auth.error.unknown': 'Щось пішло не так, спробуйте, будь ласка, ще раз',
+
+    'auth.inputError.nameIsRequired': "Ім’я користувача обов'язкове",
+    'auth.inputError.nameLength': 'Ім’я має містити щонайменше 3 символи',
+    'auth.inputError.emailIsRequired': 'Email обов`язковий',
+    'auth.inputError.wrongEmailFormat': 'Невірний формат email',
+    'auth.inputError.passwordIsRequired': 'Пароль обов`язковий',
+    'auth.inputError.passwordLength':
+      'Пароль повинен містити мінімум 8 символів',
   },
   [LOCALES.GERMAN]: {
     logo: 'Life Capital',
@@ -110,5 +126,14 @@ export const messages = {
     'auth.error.weakPassword': 'Das Passwort ist zu schwach',
     'auth.error.unknown':
       'Etwas ist schiefgelaufen, bitte versuchen Sie es erneut',
+
+    'auth.inputError.nameIsRequired': 'Benutzername ist erforderlich',
+    'auth.inputError.nameLength':
+      'Der Benutzername muss mindestens 3 Zeichen lang sein',
+    'auth.inputError.emailIsRequired': 'E-Mail ist erforderlich',
+    'auth.inputError.wrongEmailFormat': 'Ungültiges E-Mail-Format',
+    'auth.inputError.passwordIsRequired': 'Passwort ist erforderlich',
+    'auth.inputError.passwordLength':
+      'Das Passwort muss mindestens 8 Zeichen lang sein',
   },
 };
