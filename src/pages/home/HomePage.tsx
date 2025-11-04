@@ -2,11 +2,11 @@ import { signOut } from 'firebase/auth';
 
 import { auth } from '@/shared/firebase';
 
-export const App = () => {
+export const HomePage = () => {
   return (
     <>
-      App
-      <button onClick={() => signOut(auth)}>sign&nbsp;out</button>
+      HomePage
+      <button onClick={() => signOut(auth)}> sign&nbsp;out</button>
     </>
   );
 };

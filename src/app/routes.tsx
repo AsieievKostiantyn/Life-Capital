@@ -2,20 +2,23 @@ import { Navigate } from 'react-router-dom';
 
 import {
   GuestPage,
+  HomePage,
   LoginPage,
+  MyGamesPage,
   PasswordRecoveryPage,
+  ProfilePage,
   RegisterPage,
+  RulesPage,
 } from '@/pages';
 
 import { ROUTES } from '@/shared/router';
 
-import { App } from './App';
 import { AppLayout } from './layout/AppLayout';
 import { GuestLayout } from './layout/GuestLayout';
 
 export const guestRoutes = [
   {
-    path: '/',
+    path: ROUTES.HOME,
     element: <GuestLayout />,
     children: [
       {
@@ -27,18 +30,30 @@ export const guestRoutes = [
       { path: ROUTES.PASSWORD_RECOVERY, element: <PasswordRecoveryPage /> },
     ],
   },
-  { path: '*', element: <Navigate to="/" replace /> },
+  { path: '*', element: <Navigate to={ROUTES.HOME} replace /> },
 ];
 export const userRoutes = [
   {
-    path: '/',
+    path: ROUTES.HOME,
     element: <AppLayout />,
     children: [
       {
         index: true,
-        element: <App />,
+        element: <HomePage />,
+      },
+      {
+        path: ROUTES.RULES,
+        element: <RulesPage />,
+      },
+      {
+        path: ROUTES.MY_GAMES,
+        element: <MyGamesPage />,
+      },
+      {
+        path: ROUTES.PROFILE,
+        element: <ProfilePage />,
       },
     ],
   },
-  { path: '*', element: <Navigate to="/" replace /> },
+  { path: '*', element: <Navigate to={ROUTES.HOME} replace /> },
 ];

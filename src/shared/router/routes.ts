@@ -1,9 +1,10 @@
 export const ROUTES = {
-  GUEST_PAGE: '/',
+  HOME: '/',
   LOGIN: '/login',
   PASSWORD_RECOVERY: '/recovery',
   REGISTER: '/register',
-  APP: '/app',
-  GAME_SESSIONS: '/games',
-  GAME_SESSION: '/games/:gameId',
+  RULES: '/rules',
+  MY_GAMES: '/games',
+  PROFILE: '/profile',
+  GAME: '/games/:gameId',
 } as const;
