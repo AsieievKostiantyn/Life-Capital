@@ -1,9 +1,9 @@
 import { createContext } from 'react';
 
-import type { User } from 'firebase/auth';
+import { type AppUser } from '../types/user';
 
 interface AuthContextType {
-  user: User | null;
+  user: AppUser | null;
   isLoading: boolean;
   signInWithGoogle: () => void;
   signIn: (email: string, password: string) => Promise<void>;

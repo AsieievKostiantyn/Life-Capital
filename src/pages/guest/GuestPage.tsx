@@ -36,7 +36,7 @@ export const GuestPage = () => {
       <AppShell.Header>
         <Flex justify="space-between" align="center" px="md" w="100%" h="100%">
           <div>
-            <h1 className="text-[24px]">
+            <h1 className="text-[24px] font-bold">
               <FormattedMessage id="logo" />
             </h1>
           </div>

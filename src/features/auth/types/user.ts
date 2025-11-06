@@ -1,5 +1,7 @@
-export interface UserData {
+export interface AppUser {
+  uid: string;
   email: string;
-  nickName: string;
+  displayName: string;
   role: 'player' | 'host';
+  games: [];
 }

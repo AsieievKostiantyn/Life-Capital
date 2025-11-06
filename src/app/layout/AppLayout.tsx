@@ -11,6 +11,7 @@ import {
   Group,
   Image,
   Menu,
+  ScrollArea,
   useMantineColorScheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -48,7 +49,7 @@ export const AppLayout = () => {
               size="sm"
             />
 
-            <h1 className="text-[24px]">
+            <h1 className="text-[24px] font-bold">
               <FormattedMessage id="logo" />
             </h1>
           </Flex>
@@ -99,7 +100,9 @@ export const AppLayout = () => {
       </AppShell.Header>
 
       <AppShell.Navbar>
-        <Navbar />
+        <AppShell.Section grow component={ScrollArea} className="pt-5">
+          <Navbar />
+        </AppShell.Section>
       </AppShell.Navbar>
 
       <AppShell.Main>

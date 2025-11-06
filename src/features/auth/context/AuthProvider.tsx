@@ -3,19 +3,19 @@ import { useIntl } from 'react-intl';
 
 import { FirebaseError } from 'firebase/app';
 import {
-  type User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut as signOutFirebase,
 } from 'firebase/auth';
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { showNotification } from '@mantine/notifications';
 
 import { auth, db, provider } from '@/shared/firebase';
 
+import type { AppUser } from '../types/user';
 import { firebaseAuthErrorsHandler } from '../utils';
 import { AuthContext } from './AuthContext';
 
@@ -24,7 +24,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const intl = useIntl();
 
@@ -47,12 +47,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, (user) => {
+    const unSubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setUser(user);
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          setUser({
+            ...(userSnap.data() as AppUser),
+          });
+        }
       } else {
         setUser(null);
       }
+
       setIsLoading(false);
     });
     return unSubscribe;
@@ -61,11 +69,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      setUser(result.user);
+      const user = result.user;
+
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || 'Unknown',
+          role: 'player',
+          createdAt: serverTimestamp(),
+          games: [],
+        });
+      }
     } catch (error) {
       showErrorNotification(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -100,9 +120,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           displayName,
           role: 'player',
           createdAt: serverTimestamp(),
+          games: [],
         });
       } catch (dbError) {
-        console.error('User created, but profile not saved to DB.', dbError); //
+        console.error('User created, but profile not saved to DB.', dbError);
       }
     } catch (authError) {
       showErrorNotification(authError);
