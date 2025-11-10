@@ -11,30 +11,32 @@ import {
   RulesPage,
 } from '@/pages';
 
-import { ROUTES } from '@/shared/router';
+import { USER_ROUTES } from '@/shared/router';
 
-import { AppLayout } from '../layout/app-layout/AppLayout';
-import { GuestLayout } from '../layout/guest-layout/GuestLayout';
+import { AppLayout, GameLayout, GuestLayout } from '../layout';
 
 export const guestRoutes = [
   {
-    path: ROUTES.HOME,
+    path: USER_ROUTES.HOME,
     element: <GuestLayout />,
     children: [
       {
         index: true,
         element: <GuestPage />,
       },
-      { path: ROUTES.LOGIN, element: <LoginPage /> },
-      { path: ROUTES.REGISTER, element: <RegisterPage /> },
-      { path: ROUTES.PASSWORD_RECOVERY, element: <PasswordRecoveryPage /> },
+      { path: USER_ROUTES.LOGIN, element: <LoginPage /> },
+      { path: USER_ROUTES.REGISTER, element: <RegisterPage /> },
+      {
+        path: USER_ROUTES.PASSWORD_RECOVERY,
+        element: <PasswordRecoveryPage />,
+      },
     ],
   },
-  { path: '*', element: <Navigate to={ROUTES.HOME} replace /> },
+  { path: '*', element: <Navigate to={USER_ROUTES.HOME} replace /> },
 ];
 export const userRoutes = [
   {
-    path: ROUTES.HOME,
+    path: USER_ROUTES.HOME,
     element: <AppLayout />,
     children: [
       {
@@ -42,18 +44,27 @@ export const userRoutes = [
         element: <HomePage />,
       },
       {
-        path: ROUTES.RULES,
+        path: USER_ROUTES.RULES,
         element: <RulesPage />,
       },
       {
-        path: ROUTES.MY_GAMES,
+        path: USER_ROUTES.MY_GAMES,
         element: <MyGamesPage />,
       },
       {
-        path: ROUTES.PROFILE,
+        path: USER_ROUTES.PROFILE,
         element: <ProfilePage />,
       },
     ],
   },
-  { path: '*', element: <Navigate to={ROUTES.HOME} replace /> },
+  {
+    path: USER_ROUTES.GAME,
+    element: <GameLayout />,
+    children: [
+      {
+        index: true,
+      },
+    ],
+  },
+  { path: '*', element: <Navigate to={USER_ROUTES.HOME} replace /> },
 ];
