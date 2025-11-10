@@ -13,8 +13,8 @@ import {
 
 import { ROUTES } from '@/shared/router';
 
-import { AppLayout } from './layout/AppLayout';
-import { GuestLayout } from './layout/GuestLayout';
+import { AppLayout } from '../layout/app-layout/AppLayout';
+import { GuestLayout } from '../layout/guest-layout/GuestLayout';
 
 export const guestRoutes = [
   {

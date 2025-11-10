@@ -4,7 +4,7 @@ import { Notifications } from '@mantine/notifications';
 import { AuthProvider } from '@/features/auth';
 import { I18nProvider } from '@/features/i18n';
 
-import { RouterGuard } from './RouterGuard';
+import { RouterGuard } from '../router';
 
 export const AppProvider = () => {
   return (
