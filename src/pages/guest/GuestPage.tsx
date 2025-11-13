@@ -16,7 +16,7 @@ import {
 
 import { useI18n } from '@/features/i18n';
 
-import { ROUTES } from '@/shared/router';
+import { USER_ROUTES } from '@/shared/router';
 
 import GermanFlag from '@/static/images/svg/de.svg';
 import GreatBritainFlag from '@/static/images/svg/gb.svg';
@@ -28,7 +28,7 @@ export const GuestPage = () => {
   const navigate = useNavigate();
 
   const navigateToLoginPage = () => {
-    navigate(ROUTES.LOGIN);
+    navigate(USER_ROUTES.LOGIN);
   };
 
   return (

@@ -2,11 +2,11 @@ import { House } from 'lucide-react';
 
 import { Flex, NavLink } from '@mantine/core';
 
-import { ROUTES } from '@/shared/router';
+import { USER_ROUTES } from '@/shared/router';
 
 const playerNavLinks = [
   {
-    href: ROUTES.HOME,
+    href: USER_ROUTES.HOME,
     label: 'Головна',
     icon: <House />,
   },

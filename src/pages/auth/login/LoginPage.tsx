@@ -20,7 +20,7 @@ import {
 
 import { useAuth } from '@/features/auth';
 
-import { ROUTES } from '@/shared/router';
+import { USER_ROUTES } from '@/shared/router';
 
 import { GoogleButton } from '../components/GoogleButton';
 
@@ -129,7 +129,7 @@ export const LoginPage = () => {
                 }}
               />
               <Link
-                to={ROUTES.PASSWORD_RECOVERY}
+                to={USER_ROUTES.PASSWORD_RECOVERY}
                 className="text-sm text-(--mantine-color-anchor) hover:underline"
               >
                 <FormattedMessage id="auth.forgotPassword.link" />
@@ -139,7 +139,7 @@ export const LoginPage = () => {
 
           <Group justify="space-between" mt="xl">
             <Link
-              to={ROUTES.REGISTER}
+              to={USER_ROUTES.REGISTER}
               className="text-(--mantine-color-dimmed) text-[12px] hover:underline"
             >
               <FormattedMessage id="auth.noAccount" />

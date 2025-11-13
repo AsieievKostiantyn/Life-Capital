@@ -19,7 +19,7 @@ import {
 
 import { useAuth } from '@/features/auth';
 
-import { ROUTES } from '@/shared/router';
+import { USER_ROUTES } from '@/shared/router';
 
 import { GoogleButton } from '../components/GoogleButton';
 
@@ -145,7 +145,7 @@ export const RegisterPage = () => {
 
           <Group justify="space-between" mt="xl">
             <Link
-              to={ROUTES.LOGIN}
+              to={USER_ROUTES.LOGIN}
               className="text-(--mantine-color-dimmed) text-[12px] hover:underline"
             >
               <FormattedMessage id="auth.alreadyHaveAccount" />
