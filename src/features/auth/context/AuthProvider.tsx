@@ -15,7 +15,7 @@ import { showNotification } from '@mantine/notifications';
 
 import { auth, db, provider } from '@/shared/firebase';
 
-import type { AppUser } from '../types/user';
+import type { AppUser } from '../../../shared/types/user';
 import { firebaseAuthErrorsHandler } from '../utils';
 import { AuthContext } from './AuthContext';
 

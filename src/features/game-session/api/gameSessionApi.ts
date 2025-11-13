@@ -6,9 +6,8 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 
-import type { GameSessionShortInfo } from '@/features/auth/types/user';
-
 import { db } from '@/shared/firebase';
+import type { GameSessionShortInfo } from '@/shared/types/user';
 
 import type { GameSession, Player } from '../types';
 
