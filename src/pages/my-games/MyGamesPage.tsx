@@ -1,14 +1,18 @@
 import { useMemo, useState } from 'react';
 
+import { Check } from 'lucide-react';
+
 import {
   Avatar,
   Button,
   Group,
+  LoadingOverlay,
   Modal,
   MultiSelect,
   type MultiSelectProps,
   Text,
   TextInput,
+  ThemeIcon,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
@@ -24,11 +28,24 @@ type UserOptionsMap = Record<
   { value: string; label: string; email: string }
 >;
 
+type UserOptions = {
+  value: string;
+  label: string;
+  email: string;
+};
+
 export const MyGamesPage = () => {
+  const [
+    visibleLoadingOverlay,
+    { open: openLoadingOverlay, close: closeLoadingOverlay },
+  ] = useDisclosure(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [allUsers, setAllUsers] = useState<AppUser[] | null>(null);
   const [sessionName, setSessionName] = useState('');
   const [players, setPlayers] = useState<Player[]>([]);
+  const [loadingState, setLoadingState] = useState<
+    'idle' | 'loading' | 'success' | 'error'
+  >('idle');
 
   const userOptionsMap = useMemo(() => {
     if (!allUsers) return {} as UserOptionsMap;
@@ -65,38 +82,79 @@ export const MyGamesPage = () => {
   };
 
   const handleCreationGameSession = async () => {
-    const newSession = await gameSessionApi.createGameSession(
-      sessionName,
-      user.uid,
-      players
-    );
-    console.log('Your new session: ', newSession);
+    if (!isHost) close();
+
+    setLoadingState('loading');
+    openLoadingOverlay();
+    try {
+      await gameSessionApi.createGameSession(sessionName, user.uid, players);
+
+      setLoadingState('success');
+
+      setTimeout(() => {
+        closeLoadingOverlay();
+        close();
+        setLoadingState('idle');
+        setSessionName('');
+        setPlayers([]);
+      }, 1500);
+    } catch {
+      setLoadingState('idle');
+      closeLoadingOverlay();
+    }
   };
 
   const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({
     option,
-  }) => (
-    <Group gap="sm">
-      <Avatar size={36} radius="xl" name={option.label} color="initials" />
-      <div>
-        <Text size="sm">{option.label}</Text>
-        <Text size="xs" opacity={0.5}>
-          {option.email}
-        </Text>
-      </div>
-    </Group>
-  );
+  }) => {
+    const user = option as UserOptions;
+
+    return (
+      <Group gap="sm">
+        <Avatar size={36} radius="xl" name={user.label} color="initials" />
+        <div>
+          <Text size="sm">{user.label}</Text>
+          <Text size="xs" opacity={0.5}>
+            {user.email}
+          </Text>
+        </div>
+      </Group>
+    );
+  };
 
   return (
     <>
       <Modal
         opened={opened}
         onClose={close}
-        title="Створення гри"
         onEnterTransitionEnd={onEnterTransitionEnd}
+        withCloseButton={false}
       >
+        <Modal.Header>
+          <LoadingOverlay
+            visible={visibleLoadingOverlay}
+            loaderProps={{ children: ' ' }}
+          />
+
+          <Modal.Title>Створення гри</Modal.Title>
+          <Modal.CloseButton />
+        </Modal.Header>
         <Modal.Body>
+          <LoadingOverlay
+            visible={visibleLoadingOverlay}
+            loaderProps={{
+              children:
+                loadingState === 'success' ? (
+                  <ThemeIcon size="lg" radius="xl" color="lime">
+                    <Check />
+                  </ThemeIcon>
+                ) : (
+                  ''
+                ),
+            }}
+          />
           <TextInput
+            data-autofocus
             label="Назва ігрової сесії"
             placeholder="Введіть назву ігрової сесії"
             value={sessionName}
