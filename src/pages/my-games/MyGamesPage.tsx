@@ -23,6 +23,12 @@ import { userApi } from '@/features/user/api';
 
 import type { AppUser } from '@/shared/types';
 
+type FormErrors = {
+  sessionName?: string;
+  players?: string;
+  notHost?: string;
+};
+
 type UserOptionsMap = Record<
   string,
   { value: string; label: string; email: string }
@@ -46,6 +52,7 @@ export const MyGamesPage = () => {
   const [loadingState, setLoadingState] = useState<
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   const userOptionsMap = useMemo(() => {
     if (!allUsers) return {} as UserOptionsMap;
@@ -79,12 +86,15 @@ export const MyGamesPage = () => {
       displayName: userOptionsMap[uid].label,
     }));
     setPlayers(selectedPlayers);
+    setFormErrors({ ...formErrors, players: undefined });
   };
 
   const handleCreationGameSession = async () => {
-    if (!isHost) close();
+    const errors = validateData();
+    setFormErrors(errors);
 
-    setLoadingState('loading');
+    if (Object.keys(errors).length !== 0) return;
+
     openLoadingOverlay();
     try {
       await gameSessionApi.createGameSession(sessionName, user.uid, players);
@@ -97,11 +107,22 @@ export const MyGamesPage = () => {
         setLoadingState('idle');
         setSessionName('');
         setPlayers([]);
+        setFormErrors({});
       }, 1500);
     } catch {
       setLoadingState('idle');
       closeLoadingOverlay();
     }
+  };
+
+  const validateData = () => {
+    const errors: FormErrors = {};
+
+    if (!isHost) errors.notHost = 'Тільки ведучий можу створювати ігри';
+    if (!sessionName) errors.sessionName = "Введіть ім'я ігрової сесії";
+    if (players.length === 0)
+      errors.players = 'Додайте гравців до ігрової сесії';
+    return errors;
   };
 
   const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({
@@ -157,19 +178,29 @@ export const MyGamesPage = () => {
             data-autofocus
             label="Назва ігрової сесії"
             placeholder="Введіть назву ігрової сесії"
+            error={formErrors.sessionName}
             value={sessionName}
-            onChange={(event) => setSessionName(event.currentTarget.value)}
+            onChange={(event) => {
+              setSessionName(event.currentTarget.value);
+              setFormErrors({ ...formErrors, sessionName: undefined });
+            }}
           />
           <MultiSelect
             label="Список гравців"
             renderOption={renderMultiSelectOption}
             placeholder="Виберіть гравців"
             data={Object.values(userOptionsMap)}
+            error={formErrors.players}
             nothingFoundMessage="Користувача з таким іменем не існує, або він уже обраний"
             onChange={handleSelectChange}
             hidePickedOptions
             searchable
           ></MultiSelect>
+          {formErrors.notHost && (
+            <Text c="red" size="sm" mb="sm">
+              {formErrors.notHost}
+            </Text>
+          )}
           <Button variant="default" onClick={handleCreationGameSession}>
             Створити гру
           </Button>
