@@ -1,45 +1,58 @@
 import { FormattedMessage } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import { Globe, Moon, Sun } from 'lucide-react';
 
 import {
   ActionIcon,
   AppShell,
-  Button,
+  Burger,
   Flex,
   Group,
   Image,
   Menu,
+  ScrollArea,
   useMantineColorScheme,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 import { useI18n } from '@/features/i18n';
-
-import { USER_ROUTES } from '@/shared/router';
 
 import GermanFlag from '@/static/images/svg/de.svg';
 import GreatBritainFlag from '@/static/images/svg/gb.svg';
 import UkrainianFlag from '@/static/images/svg/ua.svg';
 
-export const GuestPage = () => {
+import { Navbar } from './components';
+
+export const GameLayout = () => {
+  const [opened, { toggle }] = useDisclosure();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const i18n = useI18n();
-  const navigate = useNavigate();
-
-  const navigateToLoginPage = () => {
-    navigate(USER_ROUTES.LOGIN);
-  };
 
   return (
-    <AppShell header={{ height: 60 }}>
+    <AppShell
+      padding="md"
+      header={{ height: 60 }}
+      navbar={{
+        width: 300,
+        breakpoint: 'sm',
+        collapsed: { mobile: !opened },
+      }}
+    >
       <AppShell.Header>
         <Flex justify="space-between" align="center" px="md" w="100%" h="100%">
-          <div>
+          <Flex align="center" gap="sm">
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+            />
+
             <h1 className="text-[24px] font-bold">
               <FormattedMessage id="logo" />
             </h1>
-          </div>
+          </Flex>
           <Group gap="8">
             <Menu shadow="md" width={150}>
               <Menu.Target>
@@ -82,18 +95,19 @@ export const GuestPage = () => {
             >
               {colorScheme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
             </ActionIcon>
-            <Button
-              variant="default"
-              radius="xl"
-              size="sm"
-              onClick={navigateToLoginPage}
-            >
-              <FormattedMessage id="button.signIn" />
-            </Button>
           </Group>
         </Flex>
       </AppShell.Header>
-      <AppShell.Main></AppShell.Main>
+
+      <AppShell.Navbar>
+        <AppShell.Section grow component={ScrollArea} className="pt-5">
+          <Navbar />
+        </AppShell.Section>
+      </AppShell.Navbar>
+
+      <AppShell.Main>
+        <Outlet />
+      </AppShell.Main>
     </AppShell>
   );
 };

@@ -1,4 +1,4 @@
-export const ROUTES = {
+export const USER_ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   PASSWORD_RECOVERY: '/recovery',
@@ -7,4 +7,9 @@ export const ROUTES = {
   MY_GAMES: '/games',
   PROFILE: '/profile',
   GAME: '/games/:gameId',
+} as const;
+
+export const GAME_ROUTES = {
+  HOST_ROUTES: {},
+  PLAYER_ROUTES: {},
 } as const;

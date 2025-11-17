@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { type AppUser } from '../types/user';
+import { type AppUser } from '../../../shared/types/user';
 
 interface AuthContextType {
   user: AppUser | null;

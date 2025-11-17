@@ -13,7 +13,7 @@ import {
   TextInput,
 } from '@mantine/core';
 
-import { ROUTES } from '@/shared/router';
+import { USER_ROUTES } from '@/shared/router';
 
 export const PasswordRecoveryPage = () => {
   return (
@@ -36,7 +36,7 @@ export const PasswordRecoveryPage = () => {
         <TextInput label="Email" placeholder="hello@gmail.com" radius="md" />
         <Group justify="space-between" mt="lg">
           <Link
-            to={ROUTES.LOGIN}
+            to={USER_ROUTES.LOGIN}
             className="text-(--mantine-color-dimmed) text-[12px] hover:underline"
           >
             <Flex align="center" gap={3}>
