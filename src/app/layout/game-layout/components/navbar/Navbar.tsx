@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
+
 import { House } from 'lucide-react';
 
-import { Flex, NavLink } from '@mantine/core';
+import { Flex, NavLink as MantineNavLink } from '@mantine/core';
 
 import { USER_ROUTES } from '@/shared/router';
 
@@ -16,8 +18,9 @@ export const Navbar = () => {
   return (
     <Flex direction="column">
       {playerNavLinks.map((item) => (
-        <NavLink
-          href={item.href}
+        <MantineNavLink
+          component={Link}
+          to={item.href}
           label={item.label}
           leftSection={item.icon}
           key={item.label}
