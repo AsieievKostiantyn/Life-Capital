@@ -48,7 +48,9 @@ export const MyGamesPage = () => {
 
               <Group justify="space-between" mt="md" mb="xs">
                 <Text fw={500}>{gameSession.sessionName}</Text>
-                <Badge color="pink">Status</Badge>
+                <Badge color="pink">
+                  {gameSession.status === 'archive' ? 'Архів' : 'Активна'}
+                </Badge>
               </Group>
 
               <Text size="sm" c="dimmed">

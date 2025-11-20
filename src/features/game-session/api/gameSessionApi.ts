@@ -28,6 +28,7 @@ export const gameSessionApi = {
         id: ref.id,
         createdAt: Timestamp.now(),
         players: playersList,
+        status: 'active',
       };
 
       batch.set(ref, newSessionData);
@@ -36,6 +37,7 @@ export const gameSessionApi = {
         sessionName,
         id: ref.id,
         createdAt: Timestamp.now(),
+        status: 'active',
       };
 
       const allParticipantIds = [hostId, ...playersList.map((p) => p.id)];

@@ -100,7 +100,7 @@ export const CreateGameModal = ({
     const errors: FormErrors = {};
 
     if (user.role !== 'host')
-      errors.notHost = 'Тільки ведучий можу створювати ігри';
+      errors.notHost = 'Тільки ведучий може створювати ігри';
     if (!sessionName) errors.sessionName = "Введіть ім'я ігрової сесії";
     if (players.length === 0)
       errors.players = 'Додайте гравців до ігрової сесії';
@@ -160,6 +160,7 @@ export const CreateGameModal = ({
           error={formErrors.players}
           nothingFoundMessage="Користувача з таким іменем не існує, або він уже обраний"
           onChange={handleSelectChange}
+          limit={10}
           hidePickedOptions
           searchable
         ></MultiSelect>

@@ -10,5 +10,6 @@ export type GameSession = {
   sessionName: string;
   createdAt: Timestamp;
   hostId: string;
+  status: 'active' | 'archive';
   players: Player[];
 };

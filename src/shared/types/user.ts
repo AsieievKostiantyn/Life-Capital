@@ -4,6 +4,7 @@ export type GameSessionShortInfo = {
   id: string;
   sessionName: string;
   createdAt: Timestamp;
+  status: 'active' | 'archive';
 };
 
 export interface AppUser {
