@@ -1,13 +1,33 @@
+import { useEffect, useState } from 'react';
+
 import { signOut } from 'firebase/auth';
 
 import { useAuth } from '@/features/auth';
 
 import { auth } from '@/shared/firebase';
+import { supabase } from '@/shared/supabase/supabase';
 
 export const HomePage = () => {
-  const { user, isLoading } = useAuth();
-  console.log(isLoading);
-  console.log(user);
+  useEffect(() => {
+    const test = async () => {
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+      const { data, error } = await supabase
+        .from('pg_tables')
+        .select('*')
+        .limit(5);
+
+      console.log('TEST RESULT:', data);
+      console.log('TEST ERROR:', error);
+      console.log('Test user:', user);
+      console.log('Test authError:', authError);
+    };
+
+    test();
+  }, []);
+  const { user } = useAuth();
   return (
     <>
       HomePage
