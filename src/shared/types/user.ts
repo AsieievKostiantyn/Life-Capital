@@ -1,16 +1,8 @@
-import type { Timestamp } from 'firebase/firestore';
-
-export type GameSessionShortInfo = {
-  id: string;
-  sessionName: string;
-  createdAt: Timestamp;
-  status: 'active' | 'archive';
-};
-
 export interface AppUser {
-  uid: string;
-  email: string;
+  id: string;
   displayName: string;
+  email: string;
+  avatarUrl: string | null;
   role: 'player' | 'host';
-  games: GameSessionShortInfo[];
+  createdAt: string;
 }
