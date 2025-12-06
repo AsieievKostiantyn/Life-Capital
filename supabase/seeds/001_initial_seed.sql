@@ -11,12 +11,12 @@ select
     'active'
 returning *;
 
-insert into public.user_game_sessions (user_id, session_id)
+insert into public.game_session_users (user_id, session_id)
 select
     (select id from public.users where display_name = 'demo_user'),
     (select id from public.game_sessions limit 1);
 
-insert into public.user_game_sessions (user_id, session_id)
+insert into public.game_session_users (user_id, session_id)
 select
     (select id from public.users where display_name = 'host_user'),
     (select id from public.game_sessions limit 1);

@@ -13,8 +13,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { gameSessionApi } from '@/features/game-session/api';
-import type { Player } from '@/features/game-session/types';
+import type { PlayerId } from '@/features/game-session/types';
 import { userApi } from '@/features/user/api';
 
 import type { AppUser } from '@/shared/types';
@@ -48,7 +47,7 @@ export const CreateGameModal = ({
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
   const [sessionName, setSessionName] = useState('');
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [playerIds, setPlayerIds] = useState<PlayerId[]>([]);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   const userOptionsMap: UserOptionsMap = useMemo(() => {
@@ -70,7 +69,7 @@ export const CreateGameModal = ({
 
     openLoadingOverlay();
     try {
-      await gameSessionApi.createGameSession(sessionName, user.uid, players);
+      //await gameSessionApi.createGameSession(sessionName, user.uid, players);
       setLoadingState('success');
 
       setTimeout(() => {
@@ -78,7 +77,7 @@ export const CreateGameModal = ({
         close();
         setLoadingState('idle');
         setSessionName('');
-        setPlayers([]);
+        setPlayerIds([]);
         setFormErrors({});
       }, 1500);
     } catch {
@@ -88,11 +87,7 @@ export const CreateGameModal = ({
   };
 
   const handleSelectChange = (ids: string[]) => {
-    const selectedPlayers = ids.map((uid) => ({
-      id: userOptionsMap[uid].value,
-      displayName: userOptionsMap[uid].label,
-    }));
-    setPlayers(selectedPlayers);
+    setPlayerIds(ids);
     setFormErrors({ ...formErrors, players: undefined });
   };
 
@@ -102,7 +97,7 @@ export const CreateGameModal = ({
     if (user.role !== 'host')
       errors.notHost = 'Тільки ведучий може створювати ігри';
     if (!sessionName) errors.sessionName = "Введіть ім'я ігрової сесії";
-    if (players.length === 0)
+    if (playerIds.length === 0)
       errors.players = 'Додайте гравців до ігрової сесії';
     return errors;
   };
@@ -111,7 +106,7 @@ export const CreateGameModal = ({
     <Modal
       opened={opened}
       onClose={() => {
-        setPlayers([]);
+        setPlayerIds([]);
         close();
         setFormErrors({});
       }}

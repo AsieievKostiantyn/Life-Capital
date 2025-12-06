@@ -30,19 +30,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       .eq('id', authUserId)
       .single();
 
-    if (error) {
-      console.error('Failed to load profile:', error);
-      return null;
-    }
+    if (error) throw error;
 
-    return {
-      id: data.id,
-      displayName: data.display_name,
-      email: data.email,
-      avatarUrl: data.avatar_url,
-      role: data.role,
-      createdAt: data.created_at,
-    };
+    return data;
   };
 
   useEffect(() => {

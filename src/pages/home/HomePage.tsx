@@ -7,7 +7,7 @@ export const HomePage = () => {
       HomePage
       <button onClick={signOut}> sign&nbsp;out</button>
       <h2 className="font-bold mt-4">
-        {user?.email}, {user?.displayName}
+        {user?.email}, {user?.display_name}
       </h2>
     </>
   );

@@ -9,7 +9,13 @@ export const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({
 
   return (
     <Group gap="sm">
-      <Avatar size={36} radius="xl" name={user.label} color="initials" />
+      <Avatar
+        src={user.avatar_url}
+        size={36}
+        radius="xl"
+        name={user.label}
+        color="initials"
+      />
       <div>
         <Text size="sm">{user.label}</Text>
         <Text size="xs" opacity={0.5}>

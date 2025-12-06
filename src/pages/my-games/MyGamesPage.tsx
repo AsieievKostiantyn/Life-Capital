@@ -1,17 +1,31 @@
-import { Link } from 'react-router-dom';
-
-import { Badge, Button, Card, Flex, Group, Image, Text } from '@mantine/core';
+// import { useEffect, useState } from 'react';
+// import { Link } from 'react-router-dom';
+// import { Badge, Card, Flex, Group, Image, Text } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import { useAuth } from '@/features/auth';
+
+// import { gameSessionApi } from '@/features/game-session/api';
+// import type { GameSession } from '@/features/game-session/types';
 
 import { CreateGameModal } from './components';
 
 export const MyGamesPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  //const [gameSessions, setGameSessions] = useState<GameSession[]>([]);
 
   const { user } = useAuth();
-  if (!user) return null;
+  if (!user) throw new Error('something went wrong');
+
+  // useEffect(() => {
+  //   const fetchSessions = async () => {
+  //     const sessions = await gameSessionApi.getSessionsForUser(user.id);
+  //     setGameSessions(sessions);
+  //   };
+
+  //   fetchSessions();
+  // }, [user]);
 
   return (
     <>
@@ -25,9 +39,9 @@ export const MyGamesPage = () => {
         </Button>
       )}
 
-      <Flex gap="lg" wrap="wrap" mt={10}>
-        {user.games.length > 0 ? (
-          user.games.map((gameSession) => (
+      {/* <Flex gap="lg" wrap="wrap" mt={10}>
+        {gameSessions.length > 0 ? (
+          gameSessions.map((gameSession) => (
             <Card
               component={Link}
               to={`/games/${gameSession.id}`}
@@ -54,14 +68,14 @@ export const MyGamesPage = () => {
               </Group>
 
               <Text size="sm" c="dimmed">
-                {new Date(gameSession.createdAt.seconds * 1000).toDateString()}
+                {new Date(gameSession.createdAt).toDateString()}
               </Text>
             </Card>
           ))
         ) : (
           <p>У вас немає ігрових сесій</p>
         )}
-      </Flex>
+      </Flex> */}
     </>
   );
 };
