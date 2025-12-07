@@ -1,4 +1,5 @@
 import { supabase } from '@/shared/supabase';
+import type { AppUser } from '@/shared/types';
 
 import type { CreateGameSessionPayload, GameSession } from '../types';
 
@@ -15,5 +16,29 @@ export const gameSessionApi = {
 
     if (error) throw error;
     return data.session;
+  },
+
+  getSessionsForUser: async (userId: AppUser['id']): Promise<GameSession[]> => {
+    const { data, error } = await supabase
+      .from('game_session_users')
+      .select(
+        `
+        game_sessions (*)
+      `
+      )
+      .eq('user_id', userId);
+
+    if (error) throw error;
+
+    return data.map((row) => {
+      const session = row.game_sessions;
+      return {
+        id: session.id,
+        sessionName: session.session_name,
+        hostId: session.host_id,
+        status: session.status,
+        createdAt: session.created_at,
+      };
+    });
   },
 };
