@@ -1,9 +1,17 @@
-export type PlayerId = string;
+import type { AppUser } from '@/shared/types';
+
+export type ParticipantId = string;
 
 export type GameSession = {
   id: string;
   sessionName: string;
-  hostId: string;
+  hostId: AppUser['id'];
   status: 'active' | 'archive';
   createdAt: string;
+};
+
+export type CreateGameSessionPayload = {
+  sessionName: string;
+  hostId: AppUser['id'];
+  participantIds: ParticipantId[];
 };

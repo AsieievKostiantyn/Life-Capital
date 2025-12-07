@@ -13,7 +13,8 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import type { PlayerId } from '@/features/game-session/types';
+import { gameSessionApi } from '@/features/game-session/api';
+import type { ParticipantId } from '@/features/game-session/types';
 import { userApi } from '@/features/user/api';
 
 import type { AppUser } from '@/shared/types';
@@ -47,9 +48,8 @@ export const CreateGameModal = ({
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
   const [sessionName, setSessionName] = useState('');
-  const [playerIds, setPlayerIds] = useState<PlayerId[]>([]);
+  const [participantIds, setParticipantIds] = useState<ParticipantId[]>([]);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
-
   const userOptionsMap: UserOptionsMap = useMemo(() => {
     return allUsers ? mapUsersToOptions(allUsers) : {};
   }, [allUsers]);
@@ -69,7 +69,11 @@ export const CreateGameModal = ({
 
     openLoadingOverlay();
     try {
-      //await gameSessionApi.createGameSession(sessionName, user.uid, players);
+      await gameSessionApi.createGameSession({
+        sessionName,
+        hostId: user.id,
+        participantIds,
+      });
       setLoadingState('success');
 
       setTimeout(() => {
@@ -77,7 +81,7 @@ export const CreateGameModal = ({
         close();
         setLoadingState('idle');
         setSessionName('');
-        setPlayerIds([]);
+        setParticipantIds([]);
         setFormErrors({});
       }, 1500);
     } catch {
@@ -87,7 +91,7 @@ export const CreateGameModal = ({
   };
 
   const handleSelectChange = (ids: string[]) => {
-    setPlayerIds(ids);
+    setParticipantIds(Array.from(new Set([...ids, user.id])));
     setFormErrors({ ...formErrors, players: undefined });
   };
 
@@ -97,7 +101,7 @@ export const CreateGameModal = ({
     if (user.role !== 'host')
       errors.notHost = 'Тільки ведучий може створювати ігри';
     if (!sessionName) errors.sessionName = "Введіть ім'я ігрової сесії";
-    if (playerIds.length === 0)
+    if (participantIds.length === 1)
       errors.players = 'Додайте гравців до ігрової сесії';
     return errors;
   };
@@ -106,7 +110,7 @@ export const CreateGameModal = ({
     <Modal
       opened={opened}
       onClose={() => {
-        setPlayerIds([]);
+        setParticipantIds([]);
         close();
         setFormErrors({});
       }}
