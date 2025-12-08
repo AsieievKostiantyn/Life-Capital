@@ -1,33 +1,30 @@
 import { FormattedMessage } from 'react-intl';
 import { Outlet } from 'react-router-dom';
 
-import { Globe, Moon, Sun } from 'lucide-react';
+// import { Globe, Moon, Sun } from 'lucide-react';
 
-import {
-  ActionIcon,
-  AppShell,
-  Burger,
-  Flex,
-  Group,
-  Image,
-  Menu,
-  ScrollArea,
-  useMantineColorScheme,
-} from '@mantine/core';
+// import {
+//   ActionIcon,
+//   Group,
+//   Image,
+//   Menu,
+//   useMantineColorScheme,
+// } from '@mantine/core';
+import { AppShell, Burger, Flex, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { useI18n } from '@/features/i18n';
+// import { useI18n } from '@/features/i18n';
 
-import GermanFlag from '@/static/images/svg/de.svg';
-import GreatBritainFlag from '@/static/images/svg/gb.svg';
-import UkrainianFlag from '@/static/images/svg/ua.svg';
+// import GermanFlag from '@/static/images/svg/de.svg';
+// import GreatBritainFlag from '@/static/images/svg/gb.svg';
+// import UkrainianFlag from '@/static/images/svg/ua.svg';
 
 import { Navbar } from './components';
 
 export const GameLayout = () => {
   const [opened, { toggle }] = useDisclosure();
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const i18n = useI18n();
+  // const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  // const i18n = useI18n();
 
   return (
     <AppShell
@@ -37,6 +34,10 @@ export const GameLayout = () => {
         width: 300,
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
+      }}
+      styles={{
+        header: { maxWidth: 1400, width: '100%', margin: '0 auto' },
+        navbar: { maxWidth: 300, insetInlineStart: 'auto' },
       }}
     >
       <AppShell.Header>
@@ -53,7 +54,7 @@ export const GameLayout = () => {
               <FormattedMessage id="logo" />
             </h1>
           </Flex>
-          <Group gap="8">
+          {/* <Group gap="8">
             <Menu shadow="md" width={150}>
               <Menu.Target>
                 <ActionIcon
@@ -95,7 +96,7 @@ export const GameLayout = () => {
             >
               {colorScheme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
             </ActionIcon>
-          </Group>
+          </Group> */}
         </Flex>
       </AppShell.Header>
 

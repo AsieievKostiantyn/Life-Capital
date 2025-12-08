@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { showNotification } from '@mantine/notifications';
 
+import { userApi } from '@/features/user/api';
+
 import { supabase } from '@/shared/supabase';
 import type { AppUser } from '@/shared/types';
 
@@ -23,25 +25,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
   };
 
-  const loadUserProfile = async (authUserId: string) => {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', authUserId)
-      .single();
-
-    if (error) throw error;
-
-    return data;
-  };
-
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
       const authUser = session?.user ?? null;
 
       setTimeout(async () => {
         if (authUser) {
-          const profile = await loadUserProfile(authUser.id);
+          const profile = await userApi.getUserById(authUser.id);
           setUser(profile);
         } else {
           setUser(null);

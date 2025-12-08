@@ -29,7 +29,12 @@ export const MyGamesPage = () => {
 
   return (
     <>
-      <CreateGameModal user={user} opened={opened} close={close} />
+      <CreateGameModal
+        user={user}
+        opened={opened}
+        close={close}
+        setGameSessions={setGameSessions}
+      />
 
       <div>MyGamesPage</div>
 

@@ -32,7 +32,12 @@ export const GuestPage = () => {
   };
 
   return (
-    <AppShell header={{ height: 60 }}>
+    <AppShell
+      header={{ height: 60 }}
+      styles={{
+        header: { maxWidth: 1400, width: '100%', margin: '0 auto' },
+      }}
+    >
       <AppShell.Header>
         <Flex justify="space-between" align="center" px="md" w="100%" h="100%">
           <div>

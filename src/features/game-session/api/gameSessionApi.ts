@@ -1,5 +1,6 @@
 import { supabase } from '@/shared/supabase';
 import type { AppUser } from '@/shared/types';
+import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
 import type { CreateGameSessionPayload, GameSession } from '../types';
 
@@ -15,7 +16,7 @@ export const gameSessionApi = {
     );
 
     if (error) throw error;
-    return data.session;
+    return mapSnakeToCamel(JSON.parse(data));
   },
 
   getSessionsForUser: async (userId: AppUser['id']): Promise<GameSession[]> => {
@@ -32,13 +33,7 @@ export const gameSessionApi = {
 
     return data.map((row) => {
       const session = row.game_sessions;
-      return {
-        id: session.id,
-        sessionName: session.session_name,
-        hostId: session.host_id,
-        status: session.status,
-        createdAt: session.created_at,
-      };
+      return mapSnakeToCamel(session);
     });
   },
 };

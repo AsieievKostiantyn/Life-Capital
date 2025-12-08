@@ -1,8 +1,8 @@
 export interface AppUser {
   id: string;
-  display_name: string;
+  displayName: string;
   email: string;
-  avatar_url: string | null;
+  avatarUrl: string | null;
   role: 'player' | 'host';
-  created_at: string;
+  createdAt: string;
 }
