@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
 
 import { Check } from 'lucide-react';
 
@@ -14,7 +14,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 
 import { gameSessionApi } from '@/features/game-session/api';
-import type { Player } from '@/features/game-session/types';
+import type { GameSession, ParticipantId } from '@/features/game-session/types';
 import { userApi } from '@/features/user/api';
 
 import type { AppUser } from '@/shared/types';
@@ -32,12 +32,14 @@ interface CreateGameModalProps {
   opened: boolean;
   close: () => void;
   user: AppUser;
+  setGameSessions: Dispatch<SetStateAction<GameSession[]>>;
 }
 
 export const CreateGameModal = ({
   opened,
   close,
   user,
+  setGameSessions,
 }: CreateGameModalProps) => {
   const [
     visibleLoadingOverlay,
@@ -48,9 +50,8 @@ export const CreateGameModal = ({
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
   const [sessionName, setSessionName] = useState('');
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [participantIds, setParticipantIds] = useState<ParticipantId[]>([]);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
-
   const userOptionsMap: UserOptionsMap = useMemo(() => {
     return allUsers ? mapUsersToOptions(allUsers) : {};
   }, [allUsers]);
@@ -70,7 +71,13 @@ export const CreateGameModal = ({
 
     openLoadingOverlay();
     try {
-      await gameSessionApi.createGameSession(sessionName, user.uid, players);
+      const newSession = await gameSessionApi.createGameSession({
+        sessionName,
+        hostId: user.id,
+        participantIds,
+      });
+      console.log('newSession', newSession);
+      setGameSessions((prevGameSessions) => [...prevGameSessions, newSession]);
       setLoadingState('success');
 
       setTimeout(() => {
@@ -78,7 +85,7 @@ export const CreateGameModal = ({
         close();
         setLoadingState('idle');
         setSessionName('');
-        setPlayers([]);
+        setParticipantIds([]);
         setFormErrors({});
       }, 1500);
     } catch {
@@ -88,11 +95,7 @@ export const CreateGameModal = ({
   };
 
   const handleSelectChange = (ids: string[]) => {
-    const selectedPlayers = ids.map((uid) => ({
-      id: userOptionsMap[uid].value,
-      displayName: userOptionsMap[uid].label,
-    }));
-    setPlayers(selectedPlayers);
+    setParticipantIds(Array.from(new Set([...ids, user.id])));
     setFormErrors({ ...formErrors, players: undefined });
   };
 
@@ -102,7 +105,7 @@ export const CreateGameModal = ({
     if (user.role !== 'host')
       errors.notHost = 'Тільки ведучий може створювати ігри';
     if (!sessionName) errors.sessionName = "Введіть ім'я ігрової сесії";
-    if (players.length === 0)
+    if (participantIds.length === 1)
       errors.players = 'Додайте гравців до ігрової сесії';
     return errors;
   };
@@ -111,7 +114,7 @@ export const CreateGameModal = ({
     <Modal
       opened={opened}
       onClose={() => {
-        setPlayers([]);
+        setParticipantIds([]);
         close();
         setFormErrors({});
       }}
@@ -163,6 +166,7 @@ export const CreateGameModal = ({
           limit={10}
           hidePickedOptions
           searchable
+          clearable
         ></MultiSelect>
         {formErrors.notHost && (
           <Text c="red" size="sm" mb="sm">

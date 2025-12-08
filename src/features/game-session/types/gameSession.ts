@@ -1,15 +1,17 @@
-import type { Timestamp } from 'firebase/firestore';
+import type { AppUser } from '@/shared/types';
 
-export type Player = {
-  id: string;
-  displayName: string;
-};
+export type ParticipantId = string;
 
 export type GameSession = {
   id: string;
   sessionName: string;
-  createdAt: Timestamp;
-  hostId: string;
+  hostId: AppUser['id'];
   status: 'active' | 'archive';
-  players: Player[];
+  createdAt: string;
+};
+
+export type CreateGameSessionPayload = {
+  sessionName: string;
+  hostId: AppUser['id'];
+  participantIds: ParticipantId[];
 };

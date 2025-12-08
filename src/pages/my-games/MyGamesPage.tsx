@@ -1,21 +1,40 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Badge, Button, Card, Flex, Group, Image, Text } from '@mantine/core';
+import { Badge, Card, Flex, Group, Image, Text } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import { useAuth } from '@/features/auth';
+import { gameSessionApi } from '@/features/game-session/api';
+import type { GameSession } from '@/features/game-session/types';
 
 import { CreateGameModal } from './components';
 
 export const MyGamesPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  const [gameSessions, setGameSessions] = useState<GameSession[]>([]);
 
   const { user } = useAuth();
-  if (!user) return null;
+  if (!user) throw new Error('something went wrong');
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      const sessions = await gameSessionApi.getSessionsForUser(user.id);
+      setGameSessions(sessions);
+    };
+
+    fetchSessions();
+  }, [user]);
 
   return (
     <>
-      <CreateGameModal user={user} opened={opened} close={close} />
+      <CreateGameModal
+        user={user}
+        opened={opened}
+        close={close}
+        setGameSessions={setGameSessions}
+      />
 
       <div>MyGamesPage</div>
 
@@ -26,8 +45,8 @@ export const MyGamesPage = () => {
       )}
 
       <Flex gap="lg" wrap="wrap" mt={10}>
-        {user.games.length > 0 ? (
-          user.games.map((gameSession) => (
+        {gameSessions.length > 0 ? (
+          gameSessions.map((gameSession) => (
             <Card
               component={Link}
               to={`/games/${gameSession.id}`}
@@ -54,7 +73,7 @@ export const MyGamesPage = () => {
               </Group>
 
               <Text size="sm" c="dimmed">
-                {new Date(gameSession.createdAt.seconds * 1000).toDateString()}
+                {new Date(gameSession.createdAt).toLocaleDateString()}
               </Text>
             </Card>
           ))

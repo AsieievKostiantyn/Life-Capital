@@ -1,60 +1,39 @@
-import {
-  Timestamp,
-  arrayUnion,
-  collection,
-  doc,
-  writeBatch,
-} from 'firebase/firestore';
+import { supabase } from '@/shared/supabase';
+import type { AppUser } from '@/shared/types';
+import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
-import { db } from '@/shared/firebase';
-import type { GameSessionShortInfo } from '@/shared/types/user';
-
-import type { GameSession, Player } from '../types';
+import type { CreateGameSessionPayload, GameSession } from '../types';
 
 export const gameSessionApi = {
   createGameSession: async (
-    sessionName: string,
-    hostId: string,
-    playersList: Player[]
-  ) => {
-    try {
-      const batch = writeBatch(db);
-
-      const ref = doc(collection(db, 'gameSessions'));
-
-      const newSessionData: GameSession = {
-        sessionName,
-        hostId,
-        id: ref.id,
-        createdAt: Timestamp.now(),
-        players: playersList,
-        status: 'active',
-      };
-
-      batch.set(ref, newSessionData);
-
-      const shortSessionData: GameSessionShortInfo = {
-        sessionName,
-        id: ref.id,
-        createdAt: Timestamp.now(),
-        status: 'active',
-      };
-
-      const allParticipantIds = [hostId, ...playersList.map((p) => p.id)];
-
-      for (const userId of allParticipantIds) {
-        const userRef = doc(db, 'users', userId);
-        batch.update(userRef, {
-          games: arrayUnion(shortSessionData),
-        });
+    payload: CreateGameSessionPayload
+  ): Promise<GameSession> => {
+    const { data, error } = await supabase.functions.invoke(
+      'create-game-session',
+      {
+        body: payload,
       }
+    );
 
-      await batch.commit();
+    if (error) throw error;
+    return mapSnakeToCamel(JSON.parse(data));
+  },
 
-      return newSessionData;
-    } catch (error) {
-      console.error('Failed to create game session:', error);
-      throw new Error('Failed to create game session');
-    }
+  getSessionsForUser: async (userId: AppUser['id']): Promise<GameSession[]> => {
+    const { data, error } = await supabase
+      .from('game_session_users')
+      .select(
+        `
+        game_sessions (*)
+      `
+      )
+      .eq('user_id', userId);
+
+    if (error) throw error;
+
+    return data.map((row) => {
+      const session = row.game_sessions;
+      return mapSnakeToCamel(session);
+    });
   },
 };

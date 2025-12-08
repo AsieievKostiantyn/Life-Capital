@@ -1,11 +1,23 @@
-import { collection, getDocs } from 'firebase/firestore';
-
-import { db } from '@/shared/firebase';
+import { supabase } from '@/shared/supabase';
 import type { AppUser } from '@/shared/types';
+import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
 export const userApi = {
+  getUserById: async (userId: string): Promise<AppUser> => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error) throw error;
+    return mapSnakeToCamel(data);
+  },
+
   getAllUsers: async (): Promise<AppUser[]> => {
-    const snapshot = await getDocs(collection(db, 'users'));
-    return snapshot.docs.map((doc) => doc.data() as AppUser);
+    const { data, error } = await supabase.from('users').select('*');
+
+    if (error) throw error;
+    return data.map((user) => mapSnakeToCamel(user));
   },
 };
