@@ -1,7 +1,8 @@
 import { Button, Container, Group } from '@mantine/core';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
+import { userMutationOptions } from '@/features/user/mutation-options';
 import { userQueryOptions } from '@/features/user/query-options';
 
 export const ProfilePage = () => {
@@ -11,6 +12,17 @@ export const ProfilePage = () => {
     userQueryOptions.getUserByIdQueryOption(authUser.id)
   );
 
+  const updateUser = useMutation(
+    userMutationOptions.updataUserRoleMutationOptions
+  );
+
+  const handleRoleChanging = () => {
+    updateUser.mutate({
+      newRole: user.role === 'player' ? 'host' : 'player',
+      userId: user.id,
+    });
+  };
+
   return (
     <>
       <Container>
@@ -19,7 +31,13 @@ export const ProfilePage = () => {
             Ваша роль зараз{' '}
             <span className="font-bold text-teal-400">{user.role}</span>
           </p>
-          <Button variant="default">Змінити роль</Button>
+          <Button
+            variant="default"
+            onClick={handleRoleChanging}
+            disabled={updateUser.isPending}
+          >
+            Змінити роль
+          </Button>
         </Group>
       </Container>
     </>
