@@ -1,40 +1,31 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Badge, Card, Flex, Group, Image, Text } from '@mantine/core';
 import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-import { useAuth } from '@/features/auth';
-import { gameSessionApi } from '@/features/game-session/api';
-import type { GameSession } from '@/features/game-session/types';
+import { useAuthStrict } from '@/features/auth';
+import { gameSessionQueryOptions } from '@/features/game-session/query-options';
+import { userQueryOptions } from '@/features/user/query-options';
 
 import { CreateGameModal } from './components';
 
 export const MyGamesPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
-  const [gameSessions, setGameSessions] = useState<GameSession[]>([]);
 
-  const { user } = useAuth();
-  if (!user) throw new Error('something went wrong');
+  const { user: authUser } = useAuthStrict();
 
-  useEffect(() => {
-    const fetchSessions = async () => {
-      const sessions = await gameSessionApi.getSessionsForUser(user.id);
-      setGameSessions(sessions);
-    };
-
-    fetchSessions();
-  }, [user]);
+  const { data: user } = useSuspenseQuery(
+    userQueryOptions.getUserByIdQueryOption(authUser.id)
+  );
+  const { data: gameSessions } = useSuspenseQuery(
+    gameSessionQueryOptions.getSessionsForUserQueryOption(authUser.id)
+  );
 
   return (
     <>
-      <CreateGameModal
-        user={user}
-        opened={opened}
-        close={close}
-        setGameSessions={setGameSessions}
-      />
+      <CreateGameModal user={user} opened={opened} close={close} />
 
       <div>MyGamesPage</div>
 

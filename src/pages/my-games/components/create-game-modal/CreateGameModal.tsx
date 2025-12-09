@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Check } from 'lucide-react';
 
@@ -12,9 +12,10 @@ import {
   ThemeIcon,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useMutation } from '@tanstack/react-query';
 
-import { gameSessionApi } from '@/features/game-session/api';
-import type { GameSession, ParticipantId } from '@/features/game-session/types';
+import { gameSessionMutationOptions } from '@/features/game-session/mutation-options';
+import type { ParticipantId } from '@/features/game-session/types';
 import { userApi } from '@/features/user/api';
 
 import type { AppUser } from '@/shared/types';
@@ -32,14 +33,12 @@ interface CreateGameModalProps {
   opened: boolean;
   close: () => void;
   user: AppUser;
-  setGameSessions: Dispatch<SetStateAction<GameSession[]>>;
 }
 
 export const CreateGameModal = ({
   opened,
   close,
   user,
-  setGameSessions,
 }: CreateGameModalProps) => {
   const [
     visibleLoadingOverlay,
@@ -56,6 +55,10 @@ export const CreateGameModal = ({
     return allUsers ? mapUsersToOptions(allUsers) : {};
   }, [allUsers]);
 
+  const createGameSession = useMutation(
+    gameSessionMutationOptions.createGameSessionMutationOptions
+  );
+
   const onEnterTransitionEnd = async () => {
     if (!allUsers) {
       const data = await userApi.getAllUsers();
@@ -71,13 +74,12 @@ export const CreateGameModal = ({
 
     openLoadingOverlay();
     try {
-      const newSession = await gameSessionApi.createGameSession({
+      createGameSession.mutate({
         sessionName,
         hostId: user.id,
         participantIds,
       });
-      console.log('newSession', newSession);
-      setGameSessions((prevGameSessions) => [...prevGameSessions, newSession]);
+
       setLoadingState('success');
 
       setTimeout(() => {

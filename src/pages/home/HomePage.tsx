@@ -1,7 +1,15 @@
-import { useAuth } from '@/features/auth';
+import { useQuery } from '@tanstack/react-query';
+
+import { useAuthStrict } from '@/features/auth';
+import { userQueryOptions } from '@/features/user/query-options';
 
 export const HomePage = () => {
-  const { user, signOut } = useAuth();
+  const { signOut, user: authUser } = useAuthStrict();
+
+  const { data: user } = useQuery(
+    userQueryOptions.getUserByIdQueryOption(authUser.id)
+  );
+
   return (
     <>
       HomePage

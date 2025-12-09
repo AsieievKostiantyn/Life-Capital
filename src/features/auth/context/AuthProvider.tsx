@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { showNotification } from '@mantine/notifications';
-
-import { userApi } from '@/features/user/api';
+import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
 import { supabase } from '@/shared/supabase';
-import type { AppUser } from '@/shared/types';
 
 import { AuthContext } from './AuthContext';
 
@@ -14,7 +12,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<AppUser | null>(null);
+  const [user, setUser] = useState<SupabaseAuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleAuthError = (errorMessage: string) => {
@@ -27,17 +25,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
-      const authUser = session?.user ?? null;
-
-      setTimeout(async () => {
-        if (authUser) {
-          const profile = await userApi.getUserById(authUser.id);
-          setUser(profile);
-        } else {
-          setUser(null);
-        }
-        setIsLoading(false);
-      }, 0);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
     });
 
     return () => listener.subscription.unsubscribe();
