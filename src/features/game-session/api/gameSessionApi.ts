@@ -1,3 +1,4 @@
+import { TABLES } from '@/shared/constants';
 import { supabase } from '@/shared/supabase';
 import type { AppUser } from '@/shared/types';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
@@ -21,10 +22,10 @@ export const gameSessionApi = {
 
   getSessionsForUser: async (userId: AppUser['id']): Promise<GameSession[]> => {
     const { data, error } = await supabase
-      .from('game_session_users')
+      .from(TABLES.gameSessionUsers)
       .select(
         `
-        game_sessions (*)
+        ${TABLES.gameSessions} (*)
       `
       )
       .eq('user_id', userId);

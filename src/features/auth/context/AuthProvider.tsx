@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { showNotification } from '@mantine/notifications';
 import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
+import { queryClient } from '@/shared/query-client';
 import { supabase } from '@/shared/supabase';
 
 import { AuthContext } from './AuthContext';
@@ -70,6 +71,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
+    queryClient.removeQueries();
     await supabase.auth.signOut();
   };
 

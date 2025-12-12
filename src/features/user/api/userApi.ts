@@ -1,3 +1,4 @@
+import { TABLES } from '@/shared/constants';
 import { supabase } from '@/shared/supabase';
 import type { AppUser } from '@/shared/types';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
@@ -7,17 +8,19 @@ import type { UpdateUserRoleVariables } from '../types';
 export const userApi = {
   getUserById: async (userId: string): Promise<AppUser> => {
     const { data, error } = await supabase
-      .from('users')
+      .from(TABLES.users)
       .select('*')
       .eq('id', userId)
       .single();
+
+    console.log('get by id data', data);
 
     if (error) throw error;
     return mapSnakeToCamel(data);
   },
 
   getAllUsers: async (): Promise<AppUser[]> => {
-    const { data, error } = await supabase.from('users').select('*');
+    const { data, error } = await supabase.from(TABLES.users).select('*');
 
     if (error) throw error;
     return data.map((user) => mapSnakeToCamel(user));
@@ -28,17 +31,15 @@ export const userApi = {
     userId,
   }: UpdateUserRoleVariables): Promise<AppUser> => {
     const { data, error } = await supabase
-      .from('users')
+      .from(TABLES.users)
       .update({ role: newRole })
       .eq('id', userId)
-      .select();
+      .select()
+      .single();
+
+    console.log('updated data', data);
 
     if (error) throw error;
-    console.log('updatedUser from api layer', data);
-    console.log(
-      'updated and mapped User from api layer',
-      mapSnakeToCamel(data)
-    );
     return mapSnakeToCamel(data);
   },
 };

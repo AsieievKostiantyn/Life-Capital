@@ -29,7 +29,7 @@ export const MyGamesPage = () => {
 
       <div>MyGamesPage</div>
 
-      {user.role === 'host' || (
+      {user.role === 'host' && (
         <Button variant="default" onClick={open}>
           Створити гру
         </Button>
