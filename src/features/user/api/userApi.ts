@@ -13,8 +13,6 @@ export const userApi = {
       .eq('id', userId)
       .single();
 
-    console.log('get by id data', data);
-
     if (error) throw error;
     return mapSnakeToCamel(data);
   },
@@ -36,8 +34,6 @@ export const userApi = {
       .eq('id', userId)
       .select()
       .single();
-
-    console.log('updated data', data);
 
     if (error) throw error;
     return mapSnakeToCamel(data);

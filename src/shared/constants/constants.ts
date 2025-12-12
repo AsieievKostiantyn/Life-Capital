@@ -14,3 +14,8 @@ export const CARD_TYPES = {
   demand: 'demand',
   event: 'event',
 } as const;
+
+export const ERROR_TITLES = {
+  AUTH: 'Authorization error',
+  GAME_SESSION_CREATION: 'Failed to create game session',
+};

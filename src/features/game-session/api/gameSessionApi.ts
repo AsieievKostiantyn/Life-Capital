@@ -10,7 +10,7 @@ export const gameSessionApi = {
     payload: CreateGameSessionVariables
   ): Promise<GameSession> => {
     const { data, error } = await supabase.functions.invoke(
-      'create-game-session',
+      'create-game-sessions',
       {
         body: payload,
       }

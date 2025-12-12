@@ -11,14 +11,15 @@ import {
   TextInput,
   ThemeIcon,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { gameSessionMutationOptions } from '@/features/game-session/mutation-options';
 import type { ParticipantId } from '@/features/game-session/types';
-import { userApi } from '@/features/user/api';
+import { userQueryOptions } from '@/features/user/query-options';
 
+import { ERROR_TITLES } from '@/shared/constants';
 import type { AppUser } from '@/shared/types';
+import { showErrorNotification } from '@/shared/ui';
 
 import { renderMultiSelectOption } from './render-user-option';
 import { type UserOptionsMap, mapUsersToOptions } from './user-option';
@@ -40,31 +41,43 @@ export const CreateGameModal = ({
   close,
   user,
 }: CreateGameModalProps) => {
-  const [
-    visibleLoadingOverlay,
-    { open: openLoadingOverlay, close: closeLoadingOverlay },
-  ] = useDisclosure(false);
-  const [allUsers, setAllUsers] = useState<AppUser[] | null>(null);
-  const [loadingState, setLoadingState] = useState<
-    'idle' | 'loading' | 'success' | 'error'
-  >('idle');
+  const [showOverlay, setShowOverlay] = useState(false);
   const [sessionName, setSessionName] = useState('');
   const [participantIds, setParticipantIds] = useState<ParticipantId[]>([]);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
+
+  const { data: allUsers } = useQuery(
+    userQueryOptions.getAllUsersQueryOption()
+  );
+
   const userOptionsMap: UserOptionsMap = useMemo(() => {
     return allUsers ? mapUsersToOptions(allUsers) : {};
   }, [allUsers]);
 
-  const createGameSession = useMutation(
-    gameSessionMutationOptions.createGameSessionMutationOptions
-  );
+  const createGameSession = useMutation({
+    ...gameSessionMutationOptions.createGameSessionMutationOptions,
+    onSuccess: (data, variables, onMutateResult, context) => {
+      gameSessionMutationOptions.createGameSessionMutationOptions.onSuccess?.(
+        data,
+        variables,
+        onMutateResult,
+        context
+      );
+      setShowOverlay(true);
 
-  const onEnterTransitionEnd = async () => {
-    if (!allUsers) {
-      const data = await userApi.getAllUsers();
-      setAllUsers(data);
-    }
-  };
+      setTimeout(() => {
+        close();
+        setShowOverlay(false);
+        setSessionName('');
+        setParticipantIds([]);
+        setFormErrors({});
+      }, 2000);
+    },
+    onError: (error) => {
+      setShowOverlay(false);
+      showErrorNotification(ERROR_TITLES.GAME_SESSION_CREATION, error.message);
+    },
+  });
 
   const handleCreationGameSession = async () => {
     const errors = validateData();
@@ -72,28 +85,11 @@ export const CreateGameModal = ({
 
     if (Object.keys(errors).length !== 0) return;
 
-    openLoadingOverlay();
-    try {
-      createGameSession.mutate({
-        sessionName,
-        hostId: user.id,
-        participantIds,
-      });
-
-      setLoadingState('success');
-
-      setTimeout(() => {
-        closeLoadingOverlay();
-        close();
-        setLoadingState('idle');
-        setSessionName('');
-        setParticipantIds([]);
-        setFormErrors({});
-      }, 1500);
-    } catch {
-      setLoadingState('idle');
-      closeLoadingOverlay();
-    }
+    createGameSession.mutate({
+      sessionName,
+      hostId: user.id,
+      participantIds,
+    });
   };
 
   const handleSelectChange = (ids: string[]) => {
@@ -107,7 +103,7 @@ export const CreateGameModal = ({
     if (user.role !== 'host')
       errors.notHost = 'Тільки ведучий може створювати ігри';
     if (!sessionName) errors.sessionName = "Введіть ім'я ігрової сесії";
-    if (participantIds.length === 1)
+    if (participantIds.length <= 1)
       errors.players = 'Додайте гравців до ігрової сесії';
     return errors;
   };
@@ -120,12 +116,11 @@ export const CreateGameModal = ({
         close();
         setFormErrors({});
       }}
-      onEnterTransitionEnd={onEnterTransitionEnd}
       withCloseButton={false}
     >
       <Modal.Header>
         <LoadingOverlay
-          visible={visibleLoadingOverlay}
+          visible={showOverlay || createGameSession.isPending}
           loaderProps={{ children: ' ' }}
         />
 
@@ -134,16 +129,15 @@ export const CreateGameModal = ({
       </Modal.Header>
       <Modal.Body>
         <LoadingOverlay
-          visible={visibleLoadingOverlay}
+          visible={showOverlay || createGameSession.isPending}
           loaderProps={{
-            children:
-              loadingState === 'success' ? (
-                <ThemeIcon size="lg" radius="xl" color="lime">
-                  <Check />
-                </ThemeIcon>
-              ) : (
-                ''
-              ),
+            children: createGameSession.isSuccess ? (
+              <ThemeIcon size="lg" radius="xl" color="lime">
+                <Check />
+              </ThemeIcon>
+            ) : (
+              ''
+            ),
           }}
         />
         <TextInput

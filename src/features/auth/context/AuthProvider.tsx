@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { showNotification } from '@mantine/notifications';
 import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
+import { ERROR_TITLES } from '@/shared/constants';
 import { queryClient } from '@/shared/query-client';
 import { supabase } from '@/shared/supabase';
+import { showErrorNotification } from '@/shared/ui';
 
 import { AuthContext } from './AuthContext';
 
@@ -15,14 +16,6 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<SupabaseAuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const handleAuthError = (errorMessage: string) => {
-    showNotification({
-      title: 'Authentication Error',
-      message: errorMessage,
-      color: 'red',
-    });
-  };
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
@@ -40,7 +33,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     if (error) {
-      handleAuthError(error.message);
+      showErrorNotification(ERROR_TITLES.AUTH, error.message);
     }
   };
 
@@ -56,7 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     if (error) {
-      handleAuthError(error.message);
+      showErrorNotification(ERROR_TITLES.AUTH, error.message);
     }
   };
 
@@ -66,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     if (error) {
-      handleAuthError(error.message);
+      showErrorNotification(ERROR_TITLES.AUTH, error.message);
     }
   };
 
