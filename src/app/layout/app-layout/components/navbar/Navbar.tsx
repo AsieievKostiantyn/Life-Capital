@@ -1,44 +1,27 @@
 import { Link } from 'react-router-dom';
 
-import { BookOpen, Gamepad2, House, UserRoundPen } from 'lucide-react';
-
 import { Flex, NavLink as MantineNavLink } from '@mantine/core';
 
-import { USER_ROUTES } from '@/shared/router';
+import type {
+  hostNavLinks,
+  playerNavLinks,
+  userNavLinks,
+} from '../../constants/navigationLinks';
 
-const userNavLinks = [
-  {
-    href: USER_ROUTES.HOME,
-    label: 'Головна',
-    icon: <House />,
-  },
-  {
-    href: USER_ROUTES.RULES,
-    label: 'Правила',
-    icon: <BookOpen />,
-  },
-  {
-    href: USER_ROUTES.MY_GAMES,
-    label: 'Мої ігри',
-    icon: <Gamepad2 />,
-  },
-  {
-    href: USER_ROUTES.PROFILE,
-    label: 'Профіль',
-    icon: <UserRoundPen />,
-  },
-];
+interface NavBarProps {
+  links: typeof userNavLinks | typeof hostNavLinks | typeof playerNavLinks;
+}
 
-export const Navbar = () => {
+export const Navbar = ({ links }: NavBarProps) => {
   return (
     <Flex direction="column">
-      {userNavLinks.map((item) => (
+      {links.map((link) => (
         <MantineNavLink
           component={Link}
-          to={item.href}
-          label={item.label}
-          leftSection={item.icon}
-          key={item.label}
+          to={link.href}
+          label={link.label}
+          leftSection={link.icon}
+          key={link.label}
         />
       ))}
     </Flex>

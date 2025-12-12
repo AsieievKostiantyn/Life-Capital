@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useQuery } from '@tanstack/react-query';
@@ -18,8 +19,10 @@ export const SessionInfoPage = () => {
 
   const navigate = useNavigate();
 
-  if (gameSession?.hostId === authUser.id) navigate(USER_ROUTES.PROFILE);
-  else navigate(GAME_ROUTES.PLAYER_ROUTES.PLAYER_LEGEND);
+  useEffect(() => {
+    if (gameSession?.hostId === authUser.id) navigate(USER_ROUTES.PROFILE);
+    else navigate(GAME_ROUTES.PLAYER_ROUTES.PLAYER_LEGEND);
+  }, []);
 
   return <>SessionInfo</>;
 };

@@ -20,11 +20,20 @@ import { useDisclosure } from '@mantine/hooks';
 // import UkrainianFlag from '@/static/images/svg/ua.svg';
 
 import { Navbar } from './components';
+import { hostNavLinks, playerNavLinks, userNavLinks } from './constants';
+import { useCurrentNavigationLinks } from './hooks';
 
 export const AppLayout = () => {
   const [opened, { toggle }] = useDisclosure();
+  const { isInGameSession, isHost } = useCurrentNavigationLinks();
   // const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   // const i18n = useI18n();
+
+  const links = isInGameSession
+    ? isHost
+      ? hostNavLinks
+      : playerNavLinks
+    : userNavLinks;
 
   return (
     <AppShell
@@ -102,7 +111,7 @@ export const AppLayout = () => {
 
       <AppShell.Navbar>
         <AppShell.Section grow component={ScrollArea} className="pt-5">
-          <Navbar />
+          <Navbar links={links} />
         </AppShell.Section>
       </AppShell.Navbar>
 

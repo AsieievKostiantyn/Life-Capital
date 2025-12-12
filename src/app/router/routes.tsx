@@ -15,7 +15,7 @@ import {
 
 import { GAME_ROUTES, USER_ROUTES } from '@/shared/router';
 
-import { AppLayout, GameLayout, GuestLayout } from '../layout';
+import { AppLayout, GuestLayout } from '../layout';
 
 export const guestRoutes = [
   {
@@ -61,7 +61,7 @@ export const userRoutes = [
   },
   {
     path: USER_ROUTES.GAME,
-    element: <GameLayout />,
+    element: <AppLayout />,
     children: [
       {
         index: true,
