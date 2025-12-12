@@ -6,12 +6,14 @@ import {
   LoginPage,
   MyGamesPage,
   PasswordRecoveryPage,
+  PlayerLegendPage,
   ProfilePage,
   RegisterPage,
   RulesPage,
+  SessionInfoPage,
 } from '@/pages';
 
-import { USER_ROUTES } from '@/shared/router';
+import { GAME_ROUTES, USER_ROUTES } from '@/shared/router';
 
 import { AppLayout, GameLayout, GuestLayout } from '../layout';
 
@@ -63,6 +65,11 @@ export const userRoutes = [
     children: [
       {
         index: true,
+        element: <SessionInfoPage />,
+      },
+      {
+        path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_LEGEND,
+        element: <PlayerLegendPage />,
       },
     ],
   },

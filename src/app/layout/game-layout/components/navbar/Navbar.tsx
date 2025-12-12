@@ -1,16 +1,21 @@
 import { Link } from 'react-router-dom';
 
-import { House } from 'lucide-react';
+import { BookOpenText, House } from 'lucide-react';
 
 import { Flex, NavLink as MantineNavLink } from '@mantine/core';
 
-import { USER_ROUTES } from '@/shared/router';
+import { GAME_ROUTES, USER_ROUTES } from '@/shared/router';
 
 const playerNavLinks = [
   {
     href: USER_ROUTES.HOME,
     label: 'Головна',
     icon: <House />,
+  },
+  {
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_LEGEND,
+    label: 'Легенда гравця',
+    icon: <BookOpenText />,
   },
 ];
 

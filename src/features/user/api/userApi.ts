@@ -6,7 +6,7 @@ import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 import type { UpdateUserRoleVariables } from '../types';
 
 export const userApi = {
-  getUserById: async (userId: string): Promise<AppUser> => {
+  getUserById: async (userId: AppUser['id']): Promise<AppUser> => {
     const { data, error } = await supabase
       .from(TABLES.users)
       .select('*')

@@ -10,7 +10,7 @@ export const gameSessionApi = {
     payload: CreateGameSessionVariables
   ): Promise<GameSession> => {
     const { data, error } = await supabase.functions.invoke(
-      'create-game-sessions',
+      'create-game-session',
       {
         body: payload,
       }
@@ -20,7 +20,9 @@ export const gameSessionApi = {
     return mapSnakeToCamel(JSON.parse(data));
   },
 
-  getSessionsForUser: async (userId: AppUser['id']): Promise<GameSession[]> => {
+  getGameSessionsForUser: async (
+    userId: AppUser['id']
+  ): Promise<GameSession[]> => {
     const { data, error } = await supabase
       .from(TABLES.gameSessionUsers)
       .select(
@@ -36,5 +38,18 @@ export const gameSessionApi = {
       const session = row.game_sessions;
       return mapSnakeToCamel(session);
     });
+  },
+
+  getGameSessionById: async (
+    gameSessionId: GameSession['id']
+  ): Promise<GameSession> => {
+    const { data, error } = await supabase
+      .from(TABLES.gameSessions)
+      .select('*')
+      .eq('id', gameSessionId)
+      .single();
+
+    if (error) throw error;
+    return mapSnakeToCamel(data);
   },
 };

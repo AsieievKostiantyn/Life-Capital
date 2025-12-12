@@ -4,3 +4,5 @@ export * from './home';
 export * from './rules';
 export * from './my-games';
 export * from './profile';
+export * from './player-legend';
+export * from './session-info';
