@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthStrict } from '@/features/auth';
 import { gameSessionQueryOptions } from '@/features/game-session/query-options';
 
-export const useCurrentNavigationLinks = () => {
+export const useUserGameSessionStatus = () => {
   const { gameSessionId } = useParams();
 
   const isInGameSession = Boolean(gameSessionId);

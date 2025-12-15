@@ -25,7 +25,7 @@ export const ProfilePage = () => {
 
   return (
     <>
-      <Container>
+      <Container px={0}>
         <Group>
           <p className="text-[20px]">
             Ваша роль зараз{' '}

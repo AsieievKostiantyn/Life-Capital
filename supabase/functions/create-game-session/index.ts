@@ -33,6 +33,21 @@ export const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    const { error: deckStateError } = await supabaseAdmin.rpc(
+      'init_deck_state_for_session',
+      {
+        p_game_session_id: session.id,
+      }
+    );
+
+    if (deckStateError) {
+      console.error(deckStateError);
+      return new Response(JSON.stringify({ error: deckStateError.message }), {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
+
     const rows = participantIds.map((id: string) => ({
       user_id: id,
       session_id: session.id,

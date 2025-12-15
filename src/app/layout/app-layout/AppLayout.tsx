@@ -13,6 +13,8 @@ import { Outlet } from 'react-router-dom';
 import { AppShell, Burger, Flex, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
+import { useUserGameSessionStatus } from '@/features/game-session/hooks';
+
 // import { useI18n } from '@/features/i18n';
 
 // import GermanFlag from '@/static/images/svg/de.svg';
@@ -21,11 +23,10 @@ import { useDisclosure } from '@mantine/hooks';
 
 import { Navbar } from './components';
 import { hostNavLinks, playerNavLinks, userNavLinks } from './constants';
-import { useCurrentNavigationLinks } from './hooks';
 
 export const AppLayout = () => {
   const [opened, { toggle }] = useDisclosure();
-  const { isInGameSession, isHost } = useCurrentNavigationLinks();
+  const { isInGameSession, isHost } = useUserGameSessionStatus();
   // const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   // const i18n = useI18n();
 
