@@ -53,16 +53,38 @@ export const handler = async (req: Request): Promise<Response> => {
       session_id: session.id,
     }));
 
-    const { error: playersErr } = await supabaseAdmin
+    const { data: gameSessionPlayers, error: playersErr } = await supabaseAdmin
       .from('game_session_users')
-      .insert(rows);
+      .insert(rows)
+      .select();
 
-    if (playersErr) {
+    if (playersErr || !gameSessionPlayers) {
       console.error(playersErr);
       return new Response(JSON.stringify({ error: playersErr.message }), {
         status: 500,
         headers: corsHeaders,
       });
+    }
+
+    const playerStateRows = gameSessionPlayers
+      .filter((row) => row.user_id !== hostId)
+      .map((row) => ({
+        game_session_users_id: row.id,
+      }));
+
+    const { error: playerStatesError } = await supabaseAdmin
+      .from('player_state')
+      .insert(playerStateRows);
+
+    if (playerStatesError) {
+      console.error(playerStatesError);
+      return new Response(
+        JSON.stringify({ error: playerStatesError.message }),
+        {
+          status: 500,
+          headers: corsHeaders,
+        }
+      );
     }
 
     return new Response(JSON.stringify(session), {
