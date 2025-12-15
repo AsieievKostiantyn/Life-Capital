@@ -13,6 +13,8 @@ import {
   SessionInfoPage,
 } from '@/pages';
 
+import { GameSessionProvider } from '@/features/game-session/context';
+
 import { GAME_ROUTES, USER_ROUTES } from '@/shared/router';
 
 import { AppLayout, GuestLayout } from '../layout';
@@ -61,7 +63,11 @@ export const userRoutes = [
   },
   {
     path: USER_ROUTES.GAME,
-    element: <AppLayout />,
+    element: (
+      <GameSessionProvider>
+        <AppLayout />
+      </GameSessionProvider>
+    ),
     children: [
       {
         index: true,
