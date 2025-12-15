@@ -1,3 +1,5 @@
+import type { CardTypes } from '@/shared/types';
+
 type CreditItem = {
   amountOfCredit: number;
   interest: number;
@@ -7,7 +9,15 @@ type AssetItem = {
   assetIncome: number;
 };
 
-export type PlayerLegendType = {
+export type CardsRow = {
+  id: string;
+  type: CardTypes;
+  data: CardData;
+};
+
+export type CardData = PlayerLegendData;
+
+export type PlayerLegendData = {
   profession: string;
   salary: number;
   children: number;

@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
 import { gameSessionUsersQueryOptions } from '@/features/game-session-users/query-options';
+import { playerStateQueryOptions } from '@/features/player-state/query-options';
+import type { PlayerState } from '@/features/player-state/types';
 
 import { TABLES } from '@/shared/constants';
 import { supabase } from '@/shared/supabase';
-import type { PlayerState } from '@/shared/types';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
 import { useGameSessionId } from '../hooks';
@@ -23,15 +24,19 @@ export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
 
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
 
-  const { data: gameSessionUsersId } = useQuery({
-    ...gameSessionUsersQueryOptions.getGameSessionUsersIdQueryOption(
+  const { data: gameSessionUsersId } = useSuspenseQuery(
+    gameSessionUsersQueryOptions.getGameSessionUsersIdQueryOption(
       gameSessionId,
       user.id
-    ),
-  });
+    )
+  );
+
+  const { data: initialPlayerState } = useSuspenseQuery(
+    playerStateQueryOptions.getPlayerStateQueryOption(gameSessionUsersId)
+  );
 
   useEffect(() => {
-    if (!gameSessionUsersId) return;
+    setPlayerState(initialPlayerState);
 
     const channel = supabase
       .channel(`game-session:${gameSessionId}`)
@@ -50,7 +55,9 @@ export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [gameSessionId, gameSessionUsersId]);
+  }, [gameSessionId, gameSessionUsersId, initialPlayerState]);
+
+  if (!playerState) return;
 
   return (
     <GameSessionContext.Provider value={{ playerState }}>

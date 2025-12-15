@@ -1,9 +1,9 @@
 import { createContext } from 'react';
 
-import type { PlayerState } from '@/shared/types';
+import type { PlayerState } from '@/features/player-state/types';
 
 interface GameSessionContextType {
-  playerState: PlayerState | null;
+  playerState: PlayerState;
 }
 
 export const GameSessionContext = createContext<
