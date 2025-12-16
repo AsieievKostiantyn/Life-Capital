@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import { useAuthStrict } from '@/features/auth';
-import { gameSessionUsersQueryOptions } from '@/features/game-session-users/query-options';
+import { useGameSessionUsersId } from '@/features/game-session-users/hooks';
 import { playerStateQueryOptions } from '@/features/player-state/query-options';
 import type { PlayerState } from '@/features/player-state/types';
 
@@ -11,7 +10,7 @@ import { TABLES } from '@/shared/constants';
 import { supabase } from '@/shared/supabase';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
-import { useGameSessionId } from '../hooks';
+import { useGameSessionId, useUserGameSessionStatus } from '../hooks';
 import { GameSessionContext } from './GameSessionContext';
 
 interface GameSessionProviderProps {
@@ -20,23 +19,17 @@ interface GameSessionProviderProps {
 
 export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
   const gameSessionId = useGameSessionId();
-  const { user } = useAuthStrict();
-
+  const gameSessionUsersId = useGameSessionUsersId();
+  const { isHost } = useUserGameSessionStatus();
   const [playerState, setPlayerState] = useState<PlayerState | null>(null);
 
-  const { data: gameSessionUsersId } = useSuspenseQuery(
-    gameSessionUsersQueryOptions.getGameSessionUsersIdQueryOption(
-      gameSessionId,
-      user.id
-    )
-  );
-
-  const { data: initialPlayerState } = useSuspenseQuery(
-    playerStateQueryOptions.getPlayerStateQueryOption(gameSessionUsersId)
-  );
+  const { data: initialPlayerState } = useQuery({
+    ...playerStateQueryOptions.getPlayerStateQueryOption(gameSessionUsersId),
+    enabled: !playerState && !isHost,
+  });
 
   useEffect(() => {
-    setPlayerState(initialPlayerState);
+    if (initialPlayerState) setPlayerState(mapSnakeToCamel(initialPlayerState));
 
     const channel = supabase
       .channel(`game-session:${gameSessionId}`)
@@ -48,7 +41,9 @@ export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
           table: TABLES.playerState,
           filter: `game_session_users_id=eq.${gameSessionUsersId}`,
         },
-        (payload) => setPlayerState(mapSnakeToCamel(payload.new))
+        (payload) => {
+          if (payload.new) setPlayerState(mapSnakeToCamel(payload.new));
+        }
       )
       .subscribe();
 
@@ -57,10 +52,11 @@ export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
     };
   }, [gameSessionId, gameSessionUsersId, initialPlayerState]);
 
-  if (!playerState) return;
+  if (!playerState && !isHost) return;
 
   return (
-    <GameSessionContext.Provider value={{ playerState }}>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    <GameSessionContext.Provider value={{ playerState: playerState! }}>
       {children}
     </GameSessionContext.Provider>
   );

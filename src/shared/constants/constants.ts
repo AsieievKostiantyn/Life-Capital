@@ -19,4 +19,5 @@ export const CARD_TYPES = {
 export const ERROR_TITLES = {
   AUTH: 'Authorization error',
   GAME_SESSION_CREATION: 'Failed to create game session',
+  SET_PLAYER_LEGEND: 'Failed to set legend',
 };

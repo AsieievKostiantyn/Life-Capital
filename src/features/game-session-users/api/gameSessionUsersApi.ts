@@ -13,7 +13,7 @@ export const gameSessionUsersApi = {
       .from(TABLES.gameSessionUsers)
       .select('id')
       .eq('user_id', userId)
-      .eq('session_id', gameSessionId)
+      .eq('game_session_id', gameSessionId)
       .single();
 
     if (error) throw error;

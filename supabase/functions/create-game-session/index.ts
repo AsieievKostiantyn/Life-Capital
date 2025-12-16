@@ -50,7 +50,7 @@ export const handler = async (req: Request): Promise<Response> => {
 
     const rows = participantIds.map((id: string) => ({
       user_id: id,
-      session_id: session.id,
+      game_session_id: session.id,
     }));
 
     const { data: gameSessionPlayers, error: playersErr } = await supabaseAdmin

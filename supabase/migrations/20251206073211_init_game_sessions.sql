@@ -19,12 +19,12 @@ on public.game_sessions(host_id);
 create table if not exists public.game_session_users (
     id          uuid primary key default uuid_generate_v4(),
     user_id     uuid not null references public.users(id) on delete cascade,
-    session_id  uuid not null references public.game_sessions(id) on delete cascade,
-    unique (user_id, session_id)
+    game_session_id  uuid not null references public.game_sessions(id) on delete cascade,
+    unique (user_id, game_session_id)
 );
 
 create index if not exists game_session_users_user_idx
 on public.game_session_users(user_id);
 
-create index if not exists game_session_users_session_idx
-on public.game_session_users(session_id);
+create index if not exists game_session_users_game_session_idx
+on public.game_session_users(game_session_id);
