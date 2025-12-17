@@ -25,7 +25,7 @@ import { Navbar } from './components';
 import { hostNavLinks, playerNavLinks, userNavLinks } from './constants';
 
 export const AppLayout = () => {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const { isInGameSession, isHost } = useUserGameSessionStatus();
   // const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   // const i18n = useI18n();
@@ -47,7 +47,7 @@ export const AppLayout = () => {
       }}
       styles={{
         header: { maxWidth: 1400, width: '100%', margin: '0 auto' },
-        navbar: { maxWidth: 300, insetInlineStart: 'auto' },
+        navbar: { insetInlineStart: 'auto' },
       }}
     >
       <AppShell.Header>
@@ -112,7 +112,7 @@ export const AppLayout = () => {
 
       <AppShell.Navbar>
         <AppShell.Section grow component={ScrollArea} className="pt-5">
-          <Navbar links={links} />
+          <Navbar links={links} close={close} />
         </AppShell.Section>
       </AppShell.Navbar>
 

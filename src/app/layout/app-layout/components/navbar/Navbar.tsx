@@ -10,9 +10,10 @@ import type {
 
 interface NavBarProps {
   links: typeof userNavLinks | typeof hostNavLinks | typeof playerNavLinks;
+  close: () => void;
 }
 
-export const Navbar = ({ links }: NavBarProps) => {
+export const Navbar = ({ links, close }: NavBarProps) => {
   return (
     <Flex direction="column">
       {links.map((link) => (
@@ -22,6 +23,7 @@ export const Navbar = ({ links }: NavBarProps) => {
           label={link.label}
           leftSection={link.icon}
           key={link.label}
+          onClick={close}
         />
       ))}
     </Flex>

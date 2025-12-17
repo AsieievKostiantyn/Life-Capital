@@ -1,4 +1,4 @@
-import { Button } from '@mantine/core';
+import { Button, Container, Title } from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
@@ -9,6 +9,8 @@ import { playerStateMutationOptions } from '@/features/player-state/mutation-opt
 
 import { ERROR_TITLES } from '@/shared/constants';
 import { showErrorNotification } from '@/shared/ui';
+
+import { LegendTables } from './components';
 
 export const PlayerLegendPage = () => {
   const gameSessionId = useGameSessionId();
@@ -37,9 +39,22 @@ export const PlayerLegendPage = () => {
   return (
     <>
       {playerState.playerLegendId ? (
-        playerLegendCardsRow?.data.profession
+        <>
+          {playerLegendCardsRow?.data && (
+            <Container w={600}>
+              <Title order={2} ta="center" my="sm">
+                Легенда гравця
+              </Title>
+              <LegendTables playerLegend={playerLegendCardsRow?.data} />
+            </Container>
+          )}
+        </>
       ) : (
-        <Button variant="default" onClick={handleGetPlayerLegend}>
+        <Button
+          variant="default"
+          onClick={handleGetPlayerLegend}
+          disabled={setPlayerLegendMutation.isPending}
+        >
           Отримати легенду
         </Button>
       )}
