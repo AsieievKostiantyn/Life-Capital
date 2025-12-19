@@ -10,7 +10,7 @@ import { playerStateMutationOptions } from '@/features/player-state/mutation-opt
 import { ERROR_TITLES } from '@/shared/constants';
 import { showErrorNotification } from '@/shared/ui';
 
-import { LegendTables } from './components';
+import { PlayerLegendTables } from './components';
 
 export const PlayerLegendPage = () => {
   const gameSessionId = useGameSessionId();
@@ -41,11 +41,11 @@ export const PlayerLegendPage = () => {
       {playerState.playerLegendId ? (
         <>
           {playerLegendCardsRow?.data && (
-            <Container w={600}>
+            <Container maw={600} w="100%" px="0">
               <Title order={2} ta="center" my="sm">
                 Легенда гравця
               </Title>
-              <LegendTables playerLegend={playerLegendCardsRow?.data} />
+              <PlayerLegendTables playerLegend={playerLegendCardsRow?.data} />
             </Container>
           )}
         </>

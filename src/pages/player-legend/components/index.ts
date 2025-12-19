@@ -1,1 +1,1 @@
-export * from './LegendTables';
+export * from './PlayerLegendTables';
