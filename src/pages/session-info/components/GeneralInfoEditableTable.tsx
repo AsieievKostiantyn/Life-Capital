@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { cardsQueryOptions } from '@/features/cards/query-options';
 import { useGameSessionUsersId } from '@/features/game-session-users/hooks';
-import { useGameSession } from '@/features/game-session/context';
-import { usePlayerFinances } from '@/features/player-state/store/playerStateStore';
+import { usePlayerMeta } from '@/features/player-state/stores';
+import { usePlayerFinances } from '@/features/player-state/stores/playerFinancesStore';
 import type { EditableVerticalTableSchema } from '@/features/tables/models';
 
 import { getByPath } from '@/shared/utils/path';
@@ -19,10 +19,11 @@ export const GeneralInfoEditableTable = ({
 }: GeneralInfoEditableTableProps) => {
   const store = usePlayerFinances();
   const gameSessionUsersId = useGameSessionUsersId();
-  const { playerLegendId } = useGameSession();
+  const playerLegendId = usePlayerMeta((state) => state.playerLegendId);
 
   const { data: playerLegendCardsRow } = useQuery({
-    ...cardsQueryOptions.getCardByIdQueryOption(playerLegendId),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    ...cardsQueryOptions.getCardByIdQueryOption(playerLegendId!),
     enabled: !!playerLegendId,
   });
 

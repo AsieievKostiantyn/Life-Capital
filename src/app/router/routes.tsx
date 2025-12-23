@@ -13,7 +13,7 @@ import {
   SessionInfoPage,
 } from '@/pages';
 
-import { GameSessionProvider } from '@/features/game-session/context';
+import { GameSessionSync } from '@/features/game-session/game-session-sync/GameSessionSync';
 
 import { GAME_ROUTES, USER_ROUTES } from '@/shared/router';
 
@@ -38,6 +38,7 @@ export const guestRoutes = [
   },
   { path: '*', element: <Navigate to={USER_ROUTES.HOME} replace /> },
 ];
+
 export const userRoutes = [
   {
     path: USER_ROUTES.HOME,
@@ -64,9 +65,9 @@ export const userRoutes = [
   {
     path: USER_ROUTES.GAME,
     element: (
-      <GameSessionProvider>
+      <GameSessionSync>
         <AppLayout />
-      </GameSessionProvider>
+      </GameSessionSync>
     ),
     children: [
       {

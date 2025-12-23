@@ -3,9 +3,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
 import { cardsQueryOptions } from '@/features/cards/query-options';
-import { useGameSession } from '@/features/game-session/context';
 import { useGameSessionId } from '@/features/game-session/hooks';
 import { playerStateMutationOptions } from '@/features/player-state/mutation-options';
+import { usePlayerMeta } from '@/features/player-state/stores';
 
 import { ERROR_TITLES } from '@/shared/constants';
 import { showErrorNotification } from '@/shared/ui';
@@ -15,10 +15,11 @@ import { PlayerLegendTables } from './components';
 export const PlayerLegendPage = () => {
   const gameSessionId = useGameSessionId();
   const { user } = useAuthStrict();
-  const { playerLegendId } = useGameSession();
+  const playerLegendId = usePlayerMeta((state) => state.playerLegendId);
 
   const { data: playerLegendCardsRow } = useQuery({
-    ...cardsQueryOptions.getCardByIdQueryOption(playerLegendId),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    ...cardsQueryOptions.getCardByIdQueryOption(playerLegendId!),
     enabled: !!playerLegendId,
   });
 

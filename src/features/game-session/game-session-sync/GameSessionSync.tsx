@@ -1,29 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 
 import { useGameSessionUsersId } from '@/features/game-session-users/hooks';
 import { playerStateQueryOptions } from '@/features/player-state/query-options';
-import { usePlayerFinances } from '@/features/player-state/store/playerStateStore';
-import type { FinancesState, PlayerState } from '@/features/player-state/types';
+import { usePlayerMeta } from '@/features/player-state/stores';
+import { usePlayerFinances } from '@/features/player-state/stores/playerFinancesStore';
+import type { PlayerState } from '@/features/player-state/types';
 
 import { TABLES } from '@/shared/constants';
 import { supabase } from '@/shared/supabase';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
 import { useGameSessionId, useUserGameSessionStatus } from '../hooks';
-import { GameSessionContext } from './GameSessionContext';
 
-interface GameSessionProviderProps {
+interface GameSessionSyncProps {
   children: React.ReactNode;
 }
 
-export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
+export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
   const gameSessionId = useGameSessionId();
   const gameSessionUsersId = useGameSessionUsersId();
-  const [playerLegendId, setPlayerLegendId] = useState<string | null>(null);
   const { isHost } = useUserGameSessionStatus();
-  const store = usePlayerFinances();
+
+  const financesStore = usePlayerFinances();
+  const metaStore = usePlayerMeta();
 
   const { data: initialPlayerState } = useQuery({
     ...playerStateQueryOptions.getPlayerStateQueryOption(gameSessionUsersId),
@@ -31,11 +32,12 @@ export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
   });
 
   useEffect(() => {
-    if (initialPlayerState) {
-      setPlayerLegendId(initialPlayerState.playerLegendId);
-      store.setInitial(initialPlayerState.finances);
-    }
+    if (!initialPlayerState) return;
+    metaStore.setInitial({ playerLegendId: initialPlayerState.playerLegendId });
+    financesStore.setInitial(initialPlayerState.finances);
+  }, [initialPlayerState]);
 
+  useEffect(() => {
     const channel = supabase
       .channel(`game-session:${gameSessionId}`)
       .on(
@@ -47,11 +49,12 @@ export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
           filter: `game_session_users_id=eq.${gameSessionUsersId}`,
         },
         (payload) => {
-          if (payload.new) {
-            const row = payload.new as PlayerState;
-            setPlayerLegendId(mapSnakeToCamel(row).playerLegendId);
-            store.setInitial(row.finances as FinancesState);
-          }
+          if (!payload.new) return;
+          const row = mapSnakeToCamel(payload.new as PlayerState);
+          metaStore.setInitial({
+            playerLegendId: row.playerLegendId,
+          });
+          financesStore.setInitial(row.finances);
         }
       )
       .subscribe();
@@ -59,12 +62,7 @@ export const GameSessionProvider = ({ children }: GameSessionProviderProps) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [gameSessionId, gameSessionUsersId, initialPlayerState]);
+  }, [gameSessionId, gameSessionUsersId]);
 
-  return (
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    <GameSessionContext.Provider value={{ playerLegendId: playerLegendId! }}>
-      {children}
-    </GameSessionContext.Provider>
-  );
+  return <>{children}</>;
 };
