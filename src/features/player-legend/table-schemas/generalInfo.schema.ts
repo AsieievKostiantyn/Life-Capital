@@ -26,14 +26,14 @@ export type GeneralInfoTableRowValue = string | number;
 export const createGeneralInfoTableSchema = (
   data: Omit<PlayerLegendData, 'assets' | 'expenses'>
 ): VerticalTableSchema<GeneralInfoTableRowValue> => ({
-  caption: 'Таблиця з загальної інформацією',
+  caption: 'Таблиця з загальною інформацією',
   rows: GENERAL_INFO_ORDER.map((key) => {
-    const expense = data[key];
+    const generalInfoValue = data[key];
 
     return {
       key: key,
       label: GeneralInfoLabels[key],
-      value: expense,
+      value: generalInfoValue,
     };
   }),
 });

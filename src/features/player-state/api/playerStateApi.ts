@@ -2,7 +2,11 @@ import { TABLES } from '@/shared/constants';
 import { supabase } from '@/shared/supabase';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
-import type { PlayerState, SetPlayerStatePayload } from '../types';
+import type {
+  PlayerState,
+  SetPlayerFinancesPayload,
+  SetPlayerStatePayload,
+} from '../types';
 
 export const playerStateApi = {
   getPlayerState: async (gameSessionUsersId: string) => {
@@ -21,6 +25,18 @@ export const playerStateApi = {
       p_game_session_id: gameSessionId,
       p_user_id: userId,
     });
+
+    if (error) throw error;
+  },
+
+  setPlayerFinances: async ({
+    gameSessionUsersId,
+    finances,
+  }: SetPlayerFinancesPayload) => {
+    const { error } = await supabase
+      .from('player_state')
+      .update({ finances })
+      .eq('game_session_users_id', gameSessionUsersId);
 
     if (error) throw error;
   },

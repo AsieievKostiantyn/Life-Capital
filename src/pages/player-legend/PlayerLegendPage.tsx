@@ -1,4 +1,4 @@
-import { Button, Container, Title } from '@mantine/core';
+import { Button, Container, Flex, Title } from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
@@ -15,11 +15,11 @@ import { PlayerLegendTables } from './components';
 export const PlayerLegendPage = () => {
   const gameSessionId = useGameSessionId();
   const { user } = useAuthStrict();
-  const { playerState } = useGameSession();
+  const { playerLegendId } = useGameSession();
 
   const { data: playerLegendCardsRow } = useQuery({
-    ...cardsQueryOptions.getCardByIdQueryOption(playerState?.playerLegendId),
-    enabled: !!playerState.playerLegendId,
+    ...cardsQueryOptions.getCardByIdQueryOption(playerLegendId),
+    enabled: !!playerLegendId,
   });
 
   const setPlayerLegendMutation = useMutation({
@@ -38,26 +38,30 @@ export const PlayerLegendPage = () => {
 
   return (
     <>
-      {playerState.playerLegendId ? (
-        <>
-          {playerLegendCardsRow?.data && (
-            <Container maw={600} w="100%" px="0">
-              <Title order={2} ta="center" my="sm">
-                Легенда гравця
-              </Title>
-              <PlayerLegendTables playerLegend={playerLegendCardsRow?.data} />
-            </Container>
-          )}
-        </>
-      ) : (
-        <Button
-          variant="default"
-          onClick={handleGetPlayerLegend}
-          disabled={setPlayerLegendMutation.isPending}
-        >
-          Отримати легенду
-        </Button>
-      )}
+      <Container maw={600} w="100%" px="0">
+        {playerLegendId ? (
+          <>
+            {playerLegendCardsRow?.data && (
+              <>
+                <Title order={2} ta="center" my="sm">
+                  Легенда гравця
+                </Title>
+                <PlayerLegendTables playerLegend={playerLegendCardsRow?.data} />
+              </>
+            )}
+          </>
+        ) : (
+          <Flex justify="center">
+            <Button
+              variant="default"
+              onClick={handleGetPlayerLegend}
+              disabled={setPlayerLegendMutation.isPending}
+            >
+              Отримати легенду
+            </Button>
+          </Flex>
+        )}
+      </Container>
     </>
   );
 };
