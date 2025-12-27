@@ -65,7 +65,7 @@ export const PlayerIncomesTables = () => {
         <Table variant="vertical" withTableBorder withColumnBorders>
           <Table.Tbody>
             <Table.Tr>
-              <Table.Th>Щомісячні загальні доходи</Table.Th>
+              <Table.Th>Щомісячні загальні доходи (ЗД)</Table.Th>
               <Table.Td>
                 <NumberInput
                   hideControls

@@ -6,6 +6,7 @@ import {
   LoginPage,
   MyGamesPage,
   PasswordRecoveryPage,
+  PlayerExpensesPage,
   PlayerIncomesPage,
   PlayerLegendPage,
   ProfilePage,
@@ -82,6 +83,10 @@ export const userRoutes = [
       {
         path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INCOMES,
         element: <PlayerIncomesPage />,
+      },
+      {
+        path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_EXPENSES,
+        element: <PlayerExpensesPage />,
       },
     ],
   },

@@ -3,6 +3,7 @@ import {
   BookOpenText,
   ChartNoAxesCombined,
   Gamepad2,
+  HandCoins,
   House,
   UserRoundPen,
 } from 'lucide-react';
@@ -50,6 +51,11 @@ export const playerNavLinks = [
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INCOMES,
     label: 'Доходи',
     icon: <ChartNoAxesCombined />,
+  },
+  {
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_EXPENSES,
+    label: 'Витрати',
+    icon: <HandCoins />,
   },
   {
     href: USER_ROUTES.HOME,
