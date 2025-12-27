@@ -6,3 +6,4 @@ export * from './my-games';
 export * from './profile';
 export * from './player-legend';
 export * from './session-info';
+export * from './player-incomes';

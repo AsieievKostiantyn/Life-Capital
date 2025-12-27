@@ -13,5 +13,6 @@ export const GAME_ROUTES = {
   HOST_ROUTES: {},
   PLAYER_ROUTES: {
     PLAYER_LEGEND: 'legend',
+    PLAYER_INCOMES: 'incomes',
   },
 } as const;

@@ -1,6 +1,7 @@
 import {
   BookOpen,
   BookOpenText,
+  ChartNoAxesCombined,
   Gamepad2,
   House,
   UserRoundPen,
@@ -44,6 +45,11 @@ export const playerNavLinks = [
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_LEGEND,
     label: 'Легенда гравця',
     icon: <BookOpenText />,
+  },
+  {
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INCOMES,
+    label: 'Доходи',
+    icon: <ChartNoAxesCombined />,
   },
   {
     href: USER_ROUTES.HOME,

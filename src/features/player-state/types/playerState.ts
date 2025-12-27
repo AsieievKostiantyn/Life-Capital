@@ -33,6 +33,17 @@ export type FinancesState = {
     riskInsurance?: AssetItem;
     intellectualProperty?: AssetItem;
   };
+
+  business?: Record<
+    number,
+    {
+      code?: string;
+      firstPayment?: number;
+      credit?: number;
+      cost?: number;
+      passiveIncome?: number;
+    }
+  >;
 };
 
 type AssetItem = {
