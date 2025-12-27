@@ -15,5 +15,6 @@ export const GAME_ROUTES = {
     PLAYER_LEGEND: 'legend',
     PLAYER_INCOMES: 'incomes',
     PLAYER_EXPENSES: 'expenses',
+    PLAYER_AIRBAG: 'airbag',
   },
 } as const;

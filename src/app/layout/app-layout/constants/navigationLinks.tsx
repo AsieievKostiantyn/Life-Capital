@@ -1,6 +1,7 @@
 import {
   BookOpen,
   BookOpenText,
+  BriefcaseBusiness,
   ChartNoAxesCombined,
   Gamepad2,
   HandCoins,
@@ -56,6 +57,11 @@ export const playerNavLinks = [
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_EXPENSES,
     label: 'Витрати',
     icon: <HandCoins />,
+  },
+  {
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_AIRBAG,
+    label: 'Подушка безпеки',
+    icon: <BriefcaseBusiness />,
   },
   {
     href: USER_ROUTES.HOME,

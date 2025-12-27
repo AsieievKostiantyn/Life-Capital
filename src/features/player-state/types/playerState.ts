@@ -34,6 +34,14 @@ export type FinancesState = {
     intellectualProperty?: AssetItem;
   };
 
+  credits: {
+    realEstate: CreditItem;
+    car: CreditItem;
+    machinery: CreditItem;
+    furniture: CreditItem;
+    otherCredits: CreditItem;
+  };
+
   business?: Record<
     number,
     {
@@ -44,9 +52,24 @@ export type FinancesState = {
       passiveIncome?: number;
     }
   >;
+
+  airbagAmount?: number;
+  airbag?: Record<
+    number,
+    {
+      sourceOfIncome?: string;
+      replenishment?: number;
+      accumulatedAmount?: number;
+    }
+  >;
 };
 
 type AssetItem = {
   assetAmount: number;
   assetIncome: number;
+};
+
+type CreditItem = {
+  amountOfCredit: number;
+  interest: number;
 };

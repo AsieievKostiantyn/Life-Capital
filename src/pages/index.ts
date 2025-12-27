@@ -8,3 +8,4 @@ export * from './player-legend';
 export * from './session-info';
 export * from './player-incomes';
 export * from './player-expenses';
+export * from './player-airbag';
