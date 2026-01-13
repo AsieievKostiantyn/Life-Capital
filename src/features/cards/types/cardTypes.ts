@@ -1,11 +1,14 @@
-import type { PlayerLegendData } from '@/features/player-legend/types';
-
 import type { CardTypes } from '@/shared/types';
 
-export type CardsRow = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CardsRow<T = any> = {
   id: string;
   type: CardTypes;
-  data: CardData;
+  data: T;
 };
 
-export type CardData = PlayerLegendData;
+export type ExpenseCard = {
+  id: string;
+  amountOfExpenses: number;
+  description: string;
+};

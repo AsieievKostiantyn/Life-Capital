@@ -15,4 +15,16 @@ export const cardsApi = {
     if (error) throw error;
     return mapSnakeToCamel(data) as CardsRow;
   },
+
+  getCardsById: async (cardIds: string[]) => {
+    if (cardIds.length === 0) return [];
+
+    const { data, error } = await supabase
+      .from(TABLES.cards)
+      .select('*')
+      .in('id', cardIds);
+
+    if (error) throw error;
+    return mapSnakeToCamel(data) as CardsRow[];
+  },
 };

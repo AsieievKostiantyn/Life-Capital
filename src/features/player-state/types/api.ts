@@ -13,3 +13,12 @@ export type SetPlayerFinancesPayload = {
   gameSessionUsersId: string;
   finances: FinancesState;
 };
+
+export type SetExpensePayload = {
+  gameSessionId: GameSession['id'];
+  userId: AppUser['id'];
+};
+export type SetBigExpensePayload = {
+  gameSessionId: GameSession['id'];
+  userId: AppUser['id'];
+};

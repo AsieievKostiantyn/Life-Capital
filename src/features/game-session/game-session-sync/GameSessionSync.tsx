@@ -33,7 +33,10 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
 
   useEffect(() => {
     if (!initialPlayerState) return;
-    metaStore.setInitial({ playerLegendId: initialPlayerState.playerLegendId });
+    metaStore.setInitial({
+      playerLegendId: initialPlayerState.playerLegendId,
+      expensesList: initialPlayerState.expensesList,
+    });
     financesStore.setInitial(initialPlayerState.finances);
   }, [initialPlayerState]);
 
@@ -53,6 +56,7 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
           const row = mapSnakeToCamel(payload.new as PlayerState);
           metaStore.setInitial({
             playerLegendId: row.playerLegendId,
+            expensesList: row.expensesList,
           });
           financesStore.setInitial(row.finances);
         }

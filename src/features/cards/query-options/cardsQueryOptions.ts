@@ -9,4 +9,11 @@ export const cardsQueryOptions = {
       queryFn: () => cardsApi.getCardById(cardId),
     });
   },
+
+  getCardsByIdQueryOption: (cardIds: string[]) => {
+    return queryOptions({
+      queryKey: ['game-session-users', cardIds],
+      queryFn: () => cardsApi.getCardsById(cardIds),
+    });
+  },
 };

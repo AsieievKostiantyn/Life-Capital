@@ -54,7 +54,7 @@ export const playerNavLinks = [
     icon: <ChartNoAxesCombined />,
   },
   {
-    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_EXPENSES,
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_EXPENSES.ROOT,
     label: 'Витрати',
     icon: <HandCoins />,
   },

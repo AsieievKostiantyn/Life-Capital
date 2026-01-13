@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+
+import { Gamepad2 } from 'lucide-react';
 
 import { Flex, NavLink as MantineNavLink } from '@mantine/core';
 
@@ -14,8 +16,19 @@ interface NavBarProps {
 }
 
 export const Navbar = ({ links, close }: NavBarProps) => {
+  const { gameSessionId } = useParams();
+
   return (
     <Flex direction="column">
+      {gameSessionId && (
+        <MantineNavLink
+          component={Link}
+          to={`/games/${gameSessionId}`}
+          label={'Ігрова сесія'}
+          leftSection={<Gamepad2 />}
+          onClick={close}
+        />
+      )}
       {links.map((link) => (
         <MantineNavLink
           component={Link}

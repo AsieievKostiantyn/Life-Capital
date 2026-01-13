@@ -4,6 +4,7 @@ export type PlayerState = {
   playerLegendId: string;
 
   finances: FinancesState;
+  expensesList: string[];
 };
 
 export type FinancesPath = string;
@@ -34,12 +35,12 @@ export type FinancesState = {
     intellectualProperty?: AssetItem;
   };
 
-  credits: {
-    realEstate: CreditItem;
-    car: CreditItem;
-    machinery: CreditItem;
-    furniture: CreditItem;
-    otherCredits: CreditItem;
+  credits?: {
+    realEstate?: CreditItem;
+    car?: CreditItem;
+    machinery?: CreditItem;
+    furniture?: CreditItem;
+    otherCredits?: CreditItem;
   };
 
   business?: Record<

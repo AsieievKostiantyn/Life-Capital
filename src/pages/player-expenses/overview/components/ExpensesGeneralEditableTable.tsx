@@ -43,7 +43,8 @@ export const ExpensesGeneralEditableTable = ({
                   hideControls
                   placeholder={
                     row.hintPath
-                      ? row.hintPath === 'expenses.childExpenses'
+                      ? row.hintPath === 'expenses.childExpenses' &&
+                        playerLegendCardsRow
                         ? `${playerLegendCardsRow?.data.children} * ${getByPath(playerLegendCardsRow?.data, row.hintPath)}`
                         : getByPath(playerLegendCardsRow?.data, row.hintPath)
                       : ''

@@ -45,9 +45,7 @@ export const PlayerExpensesTables = () => {
               <NumberInput
                 hideControls
                 value={monthlyTotalExpenses ?? ''}
-                placeholder={String(
-                  playerLegendCardsRow?.data.monthlyTotalIncome
-                )}
+                placeholder={playerLegendCardsRow?.data.monthlyTotalIncome}
                 onChange={(v) =>
                   setValueByPath('generalInfo.monthlyTotalExpenses', v)
                 }

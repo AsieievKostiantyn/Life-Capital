@@ -1,4 +1,4 @@
-import { Button, Flex, NumberInput, Table } from '@mantine/core';
+import { Flex, NumberInput, Table } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
 import { cardsQueryOptions } from '@/features/cards/query-options';
@@ -27,13 +27,8 @@ export const PlayerIncomesTables = () => {
     enabled: !!playerLegendId,
   });
 
-  const businessTableRowCount = usePlayerFinances(
-    (s) => Object.keys(s.draft.business ?? {}).length
-  );
-
-  const handleAddRow = () => {
-    setValueByPath(`business.${businessTableRowCount}`, {});
-  };
+  const businessTableRowCount =
+    usePlayerFinances((s) => Object.keys(s.draft.business ?? {}).length) + 1;
 
   return (
     <>
@@ -55,13 +50,6 @@ export const PlayerIncomesTables = () => {
           withTableBorder
           withColumnBorders
         />
-        <Button
-          variant="default"
-          onClick={handleAddRow}
-          hidden={businessTableRowCount === 20}
-        >
-          Додати рядок
-        </Button>
         <Table variant="vertical" withTableBorder withColumnBorders>
           <Table.Tbody>
             <Table.Tr>
@@ -70,9 +58,7 @@ export const PlayerIncomesTables = () => {
                 <NumberInput
                   hideControls
                   value={monthlyTotalIncomes ?? ''}
-                  placeholder={String(
-                    playerLegendCardsRow?.data.monthlyTotalIncome
-                  )}
+                  placeholder={playerLegendCardsRow?.data.monthlyTotalIncome}
                   onChange={(v) =>
                     setValueByPath('generalInfo.monthlyTotalIncome', v)
                   }
