@@ -33,6 +33,23 @@ export const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    const { error: gameStateCreationError } = await supabaseAdmin
+      .from('game_state')
+      .insert({
+        game_session_id: session.id,
+      });
+
+    if (gameStateCreationError) {
+      console.error(gameStateCreationError);
+      return new Response(
+        JSON.stringify({ error: gameStateCreationError.message }),
+        {
+          status: 500,
+          headers: corsHeaders,
+        }
+      );
+    }
+
     const { error: deckStateError } = await supabaseAdmin.rpc(
       'init_deck_state_for_session',
       {
