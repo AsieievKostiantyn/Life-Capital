@@ -4,10 +4,8 @@ import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
 import type {
   PlayerState,
-  SetBigExpensePayload,
-  SetExpensePayload,
   SetPlayerFinancesPayload,
-  SetPlayerStatePayload,
+  SetPlayerStateByGameSessionAndUserIdPayload,
 } from '../types';
 
 export const playerStateApi = {
@@ -22,7 +20,10 @@ export const playerStateApi = {
     return mapSnakeToCamel(data) as PlayerState;
   },
 
-  setPlayerLegend: async ({ gameSessionId, userId }: SetPlayerStatePayload) => {
+  setPlayerLegend: async ({
+    gameSessionId,
+    userId,
+  }: SetPlayerStateByGameSessionAndUserIdPayload) => {
     const { error } = await supabase.rpc('set_player_legend', {
       p_game_session_id: gameSessionId,
       p_user_id: userId,
@@ -43,7 +44,10 @@ export const playerStateApi = {
     if (error) throw error;
   },
 
-  setExpense: async ({ gameSessionId, userId }: SetExpensePayload) => {
+  setExpense: async ({
+    gameSessionId,
+    userId,
+  }: SetPlayerStateByGameSessionAndUserIdPayload) => {
     const { error } = await supabase.rpc('set_expense', {
       p_game_session_id: gameSessionId,
       p_user_id: userId,
@@ -52,10 +56,21 @@ export const playerStateApi = {
     if (error) throw error;
   },
 
-  setBigExpense: async ({ gameSessionId, userId }: SetBigExpensePayload) => {
+  setBigExpense: async ({
+    gameSessionId,
+    userId,
+  }: SetPlayerStateByGameSessionAndUserIdPayload) => {
     const { error } = await supabase.rpc('set_big_expense', {
       p_game_session_id: gameSessionId,
       p_user_id: userId,
+    });
+
+    if (error) throw error;
+  },
+
+  markNewsAsRead: async (gameSessionUsersId: string) => {
+    const { error } = await supabase.rpc('mark_news_as_read', {
+      p_game_session_users_id: gameSessionUsersId,
     });
 
     if (error) throw error;

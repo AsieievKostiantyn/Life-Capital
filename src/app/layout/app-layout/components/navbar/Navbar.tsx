@@ -2,7 +2,11 @@ import { Link, useParams } from 'react-router-dom';
 
 import { Gamepad2 } from 'lucide-react';
 
-import { Flex, NavLink as MantineNavLink } from '@mantine/core';
+import { Flex, Indicator, NavLink as MantineNavLink } from '@mantine/core';
+
+import { useHasUnreadNews } from '@/features/player-state/hooks/useHasUnreadNews';
+
+import { GAME_ROUTES } from '@/shared/router';
 
 import type {
   hostNavLinks,
@@ -17,9 +21,10 @@ interface NavBarProps {
 
 export const Navbar = ({ links, close }: NavBarProps) => {
   const { gameSessionId } = useParams();
+  const hasUnreadNews = useHasUnreadNews();
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" px={10}>
       {gameSessionId && (
         <MantineNavLink
           component={Link}
@@ -30,14 +35,25 @@ export const Navbar = ({ links, close }: NavBarProps) => {
         />
       )}
       {links.map((link) => (
-        <MantineNavLink
-          component={Link}
-          to={link.href}
-          label={link.label}
-          leftSection={link.icon}
+        <Indicator
+          disabled={
+            !(
+              hasUnreadNews &&
+              link.href === GAME_ROUTES.PLAYER_ROUTES.PLAYER_NEWS
+            )
+          }
           key={link.label}
-          onClick={close}
-        />
+          color="red"
+          size={6}
+        >
+          <MantineNavLink
+            component={Link}
+            to={link.href}
+            label={link.label}
+            leftSection={link.icon}
+            onClick={close}
+          />
+        </Indicator>
       ))}
     </Flex>
   );

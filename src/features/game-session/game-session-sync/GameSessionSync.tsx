@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { useGameSessionUsersId } from '@/features/game-session-users/hooks';
+import { gameStateQueryOptions } from '@/features/game_state/query-options';
+import { useGameState } from '@/features/game_state/stores';
+import type { GameState } from '@/features/game_state/types';
 import { playerStateQueryOptions } from '@/features/player-state/query-options';
 import { usePlayerMeta } from '@/features/player-state/stores';
 import { usePlayerFinances } from '@/features/player-state/stores/playerFinancesStore';
@@ -25,10 +28,15 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
 
   const financesStore = usePlayerFinances();
   const metaStore = usePlayerMeta();
+  const gameStateStore = useGameState();
 
   const { data: initialPlayerState } = useQuery({
     ...playerStateQueryOptions.getPlayerStateQueryOption(gameSessionUsersId),
     enabled: !isHost,
+  });
+
+  const { data: initialGameState } = useQuery({
+    ...gameStateQueryOptions.getGameState(gameSessionId),
   });
 
   useEffect(() => {
@@ -36,9 +44,17 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
     metaStore.setInitial({
       playerLegendId: initialPlayerState.playerLegendId,
       expensesList: initialPlayerState.expensesList,
+      metadata: initialPlayerState.metadata,
     });
     financesStore.setInitial(initialPlayerState.finances);
   }, [initialPlayerState]);
+
+  useEffect(() => {
+    if (!initialGameState) return;
+    gameStateStore.setInitial({
+      newsList: initialGameState.newsList,
+    });
+  }, [initialGameState]);
 
   useEffect(() => {
     const channel = supabase
@@ -53,12 +69,29 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
         },
         (payload) => {
           if (!payload.new) return;
-          const row = mapSnakeToCamel(payload.new as PlayerState);
+          const row = mapSnakeToCamel(payload.new) as PlayerState;
           metaStore.setInitial({
             playerLegendId: row.playerLegendId,
             expensesList: row.expensesList,
+            metadata: row.metadata,
           });
           financesStore.setInitial(row.finances);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: TABLES.gameState,
+          filter: `game_session_id=eq.${gameSessionId}`,
+        },
+        (payload) => {
+          if (!payload.new) return;
+          const row = mapSnakeToCamel(payload.new) as GameState;
+          gameStateStore.setInitial({
+            newsList: mapSnakeToCamel(row.newsList),
+          });
         }
       )
       .subscribe();

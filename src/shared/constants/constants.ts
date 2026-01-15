@@ -4,6 +4,7 @@ export const TABLES = {
   gameSessions: 'game_sessions',
   gameSessionUsers: 'game_session_users',
   playerState: 'player_state',
+  gameState: 'game_state',
 } as const;
 
 export const CARD_TYPES = {

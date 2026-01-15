@@ -12,6 +12,7 @@ import {
   PlayerIncomesPage,
   PlayerLegendPage,
   PlayerMyExpensesPage,
+  PlayerNewsPage,
   ProfilePage,
   RegisterPage,
   RulesPage,
@@ -112,6 +113,10 @@ export const userRoutes = [
       {
         path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_AIRBAG,
         element: <PlayerAirbagPage />,
+      },
+      {
+        path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_NEWS,
+        element: <PlayerNewsPage />,
       },
     ],
   },

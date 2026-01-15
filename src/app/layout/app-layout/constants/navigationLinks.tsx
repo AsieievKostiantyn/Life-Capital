@@ -6,6 +6,7 @@ import {
   Gamepad2,
   HandCoins,
   House,
+  Newspaper,
   UserRoundPen,
 } from 'lucide-react';
 
@@ -47,6 +48,11 @@ export const playerNavLinks = [
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_LEGEND,
     label: 'Легенда гравця',
     icon: <BookOpenText />,
+  },
+  {
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_NEWS,
+    label: 'Новини',
+    icon: <Newspaper />,
   },
   {
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INCOMES,

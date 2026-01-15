@@ -11,6 +11,7 @@ import {
 
 export const SessionInfoPage = () => {
   const { isHost } = useUserGameSessionStatus();
+
   return (
     <>
       <Container maw={600} w="100%" px="0">

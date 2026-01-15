@@ -20,5 +20,6 @@ export const GAME_ROUTES = {
       MY: 'my',
     },
     PLAYER_AIRBAG: 'airbag',
+    PLAYER_NEWS: 'news',
   },
 } as const;

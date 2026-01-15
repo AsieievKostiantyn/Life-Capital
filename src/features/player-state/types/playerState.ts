@@ -5,6 +5,11 @@ export type PlayerState = {
 
   finances: FinancesState;
   expensesList: string[];
+  metadata: PlayerMetaData;
+};
+
+type PlayerMetaData = {
+  lastSeenNewsAt?: string;
 };
 
 export type FinancesPath = string;
