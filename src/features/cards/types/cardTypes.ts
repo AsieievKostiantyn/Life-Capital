@@ -1,14 +1,39 @@
-import type { CardTypes } from '@/shared/types';
+import type { PlayerLegendCardRow } from '@/features/player-legend/types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CardsRow<T = any> = {
+import { CARD_TYPES } from '../constants/constants';
+
+export type CardsRow =
+  | ExpenseCardRow
+  | DemandCardRow
+  | EventCardRow
+  | PlayerLegendCardRow;
+
+export type ExpenseCardRow = {
   id: string;
-  type: CardTypes;
-  data: T;
+  type: (typeof CARD_TYPES)['EXPENSE'] | (typeof CARD_TYPES)['BIG_EXPENSE'];
+  data: ExpenseCardData;
 };
-
-export type ExpenseCard = {
+type ExpenseCardData = {
   id: string;
   amountOfExpenses: number;
   description: string;
 };
+
+export type DemandCardRow = {
+  id: string;
+  type: (typeof CARD_TYPES)['DEMAND'];
+  data: DemandCardData;
+};
+type DemandCardData = {
+  id: string;
+  title: string;
+  codes: string[];
+  description: string;
+};
+
+export type EventCardRow = {
+  id: string;
+  type: (typeof CARD_TYPES)['EVENT'];
+  data: EventCardData;
+};
+type EventCardData = { id: string; title: string; description: string };

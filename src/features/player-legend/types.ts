@@ -1,5 +1,7 @@
 import type { TableData } from '@mantine/core';
 
+import type { CARD_TYPES } from '../cards/constants/constants';
+
 type CreditItem = {
   amountOfCredit: number;
   interest: number;
@@ -9,7 +11,13 @@ type AssetItem = {
   assetIncome: number;
 };
 
-export type PlayerLegendData = {
+export type PlayerLegendCardRow = {
+  id: string;
+  type: (typeof CARD_TYPES)['PLAYER_LEGEND'];
+  data: PlayerLegendData;
+};
+
+type PlayerLegendData = {
   profession: string;
   salary: number;
   children: number;

@@ -14,8 +14,12 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
+import { CARD_TYPES } from '@/features/cards/constants/constants';
 import { cardsQueryOptions } from '@/features/cards/query-options';
-import type { CardsRow, ExpenseCard } from '@/features/cards/types/cardTypes';
+import type {
+  CardsRow,
+  ExpenseCardRow,
+} from '@/features/cards/types/cardTypes';
 import { useGameSessionId } from '@/features/game-session/hooks';
 import { playerStateMutationOptions } from '@/features/player-state/mutation-options';
 import { usePlayerMeta } from '@/features/player-state/stores';
@@ -36,13 +40,22 @@ export const PlayerMyExpensesPage = () => {
     enabled: !!expensesList,
   });
 
-  let sortedExpensesRowsList: CardsRow<ExpenseCard>[] = [];
+  let sortedExpensesRowsList: ExpenseCardRow[] = [];
+
+  const isExpenseCardRow = (cardRow: CardsRow): cardRow is ExpenseCardRow => {
+    return (
+      cardRow.type === CARD_TYPES.EXPENSE ||
+      cardRow.type === CARD_TYPES.BIG_EXPENSE
+    );
+  };
 
   if (expensesRowsList) {
-    sortedExpensesRowsList = [...expensesRowsList].sort(
-      (a, b) =>
-        (expensesOrderMap.get(a.id) ?? 0) - (expensesOrderMap.get(b.id) ?? 0)
-    );
+    sortedExpensesRowsList = [...expensesRowsList]
+      .filter((cardRow) => isExpenseCardRow(cardRow))
+      .sort(
+        (a, b) =>
+          (expensesOrderMap.get(a.id) ?? 0) - (expensesOrderMap.get(b.id) ?? 0)
+      );
   }
 
   const setExpenseMutation = useMutation({

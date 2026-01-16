@@ -1,6 +1,7 @@
 import { NumberInput, Table, type TableProps } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
+import { CARD_TYPES } from '@/features/cards/constants/constants';
 import { cardsQueryOptions } from '@/features/cards/query-options';
 import {
   usePlayerFinances,
@@ -44,7 +45,8 @@ export const ExpensesGeneralEditableTable = ({
                   placeholder={
                     row.hintPath
                       ? row.hintPath === 'expenses.childExpenses' &&
-                        playerLegendCardsRow
+                        playerLegendCardsRow &&
+                        playerLegendCardsRow.type === CARD_TYPES.PLAYER_LEGEND
                         ? `${playerLegendCardsRow?.data.children} * ${getByPath(playerLegendCardsRow?.data, row.hintPath)}`
                         : getByPath(playerLegendCardsRow?.data, row.hintPath)
                       : ''

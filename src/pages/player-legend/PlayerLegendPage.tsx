@@ -2,6 +2,7 @@ import { Button, Container, Flex, Title } from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
+import { CARD_TYPES } from '@/features/cards/constants/constants';
 import { cardsQueryOptions } from '@/features/cards/query-options';
 import { useGameSessionId } from '@/features/game-session/hooks';
 import { playerStateMutationOptions } from '@/features/player-state/mutation-options';
@@ -42,14 +43,17 @@ export const PlayerLegendPage = () => {
       <Container maw={600} w="100%" px="0">
         {playerLegendId ? (
           <>
-            {playerLegendCardsRow?.data && (
-              <>
-                <Title order={2} ta="center" my="sm">
-                  Легенда гравця
-                </Title>
-                <PlayerLegendTables playerLegend={playerLegendCardsRow?.data} />
-              </>
-            )}
+            {playerLegendCardsRow?.data &&
+              playerLegendCardsRow.type === CARD_TYPES.PLAYER_LEGEND && (
+                <>
+                  <Title order={2} ta="center" my="sm">
+                    Легенда гравця
+                  </Title>
+                  <PlayerLegendTables
+                    playerLegend={playerLegendCardsRow.data}
+                  />
+                </>
+              )}
           </>
         ) : (
           <Flex justify="center">

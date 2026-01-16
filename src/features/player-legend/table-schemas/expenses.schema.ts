@@ -1,4 +1,4 @@
-import type { PlayerLegendData } from '@/features/player-legend/types';
+import type { PlayerLegendCardRow } from '@/features/player-legend/types';
 import type { VerticalTableSchema } from '@/features/tables/models';
 
 const EXPENSES_ORDER = [
@@ -22,7 +22,7 @@ const ExpenseLabels: Record<ExpenseKey, string> = {
 export type CreditTableRowValue = number;
 
 export const createExpensesTableSchema = (
-  data: Omit<PlayerLegendData['expenses'], 'credits'>
+  data: Omit<PlayerLegendCardRow['data']['expenses'], 'credits'>
 ): VerticalTableSchema<CreditTableRowValue> => ({
   caption: 'Таблиця витрат',
   rows: EXPENSES_ORDER.map((key) => {

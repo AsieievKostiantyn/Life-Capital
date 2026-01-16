@@ -1,6 +1,7 @@
 import { Container, Flex, NumberInput, Table, Title } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
+import { CARD_TYPES } from '@/features/cards/constants/constants';
 import { cardsQueryOptions } from '@/features/cards/query-options';
 import {
   usePlayerFinances,
@@ -73,12 +74,14 @@ export const PlayerAirbagPage = () => {
               <Table.Tr>
                 <Table.Th>Значення подушки безпеки</Table.Th>
                 <Table.Td>
-                  <NumberInput
-                    hideControls
-                    value={airbagAmount ?? ''}
-                    placeholder={`6 * ${playerLegendCardsRow?.data.monthlyTotalExpenses}`}
-                    onChange={(v) => setValueByPath('airbagAmount', v)}
-                  />
+                  {playerLegendCardsRow?.type === CARD_TYPES.PLAYER_LEGEND && (
+                    <NumberInput
+                      hideControls
+                      value={airbagAmount ?? ''}
+                      placeholder={`6 * ${playerLegendCardsRow?.data.monthlyTotalExpenses}`}
+                      onChange={(v) => setValueByPath('airbagAmount', v)}
+                    />
+                  )}
                 </Table.Td>
               </Table.Tr>
             </Table.Tbody>

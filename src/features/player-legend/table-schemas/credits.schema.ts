@@ -1,4 +1,4 @@
-import type { PlayerLegendData } from '@/features/player-legend/types';
+import type { PlayerLegendCardRow } from '@/features/player-legend/types';
 import type { HorizontalTableSchema } from '@/features/tables/models';
 
 const CREDITS_ORDER = [
@@ -26,7 +26,7 @@ export type CreditTableRow = {
 };
 
 export const createCreditsTableSchema = (
-  data: PlayerLegendData['expenses']['credits']
+  data: PlayerLegendCardRow['data']['expenses']['credits']
 ): HorizontalTableSchema<CreditTableRow> => ({
   caption: 'Таблиця кредитів',
   columns: [

@@ -7,16 +7,6 @@ export const TABLES = {
   gameState: 'game_state',
 } as const;
 
-export const CARD_TYPES = {
-  playerLegend: 'player_legend',
-  expense: 'expense',
-  bigExpense: 'big_expense',
-  investment: 'investment',
-  bigInvestment: 'big_investment',
-  demand: 'demand',
-  event: 'event',
-} as const;
-
 export const ERROR_TITLES = {
   AUTH: 'Authorization error',
   GAME_SESSION_CREATION: 'Failed to create game session',

@@ -6,7 +6,7 @@ import {
   createExpensesTableSchema,
   createGeneralInfoTableSchema,
 } from '@/features/player-legend/table-schemas';
-import type { PlayerLegendData } from '@/features/player-legend/types';
+import type { PlayerLegendCardRow } from '@/features/player-legend/types';
 
 import { AssetsTable } from './AssetsTable';
 import { CreditsTable } from './CreditsTable';
@@ -14,7 +14,7 @@ import { ExpansesTable } from './ExpensesTable';
 import { GeneralInfoTable } from './GeneralInfoTable';
 
 interface LegendTablesProps {
-  playerLegend: PlayerLegendData;
+  playerLegend: PlayerLegendCardRow['data'];
 }
 
 export const PlayerLegendTables = ({ playerLegend }: LegendTablesProps) => {

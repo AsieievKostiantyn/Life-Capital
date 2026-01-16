@@ -1,6 +1,7 @@
 import { Flex, NumberInput, Table } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
+import { CARD_TYPES } from '@/features/cards/constants/constants';
 import { cardsQueryOptions } from '@/features/cards/query-options';
 import {
   usePlayerFinances,
@@ -45,7 +46,12 @@ export const PlayerExpensesTables = () => {
               <NumberInput
                 hideControls
                 value={monthlyTotalExpenses ?? ''}
-                placeholder={playerLegendCardsRow?.data.monthlyTotalIncome}
+                placeholder={
+                  playerLegendCardsRow &&
+                  playerLegendCardsRow.type === CARD_TYPES.PLAYER_LEGEND
+                    ? String(playerLegendCardsRow.data.monthlyTotalIncome)
+                    : ''
+                }
                 onChange={(v) =>
                   setValueByPath('generalInfo.monthlyTotalExpenses', v)
                 }

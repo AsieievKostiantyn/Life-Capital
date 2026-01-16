@@ -1,4 +1,4 @@
-import type { PlayerLegendData } from '@/features/player-legend/types';
+import type { PlayerLegendCardRow } from '@/features/player-legend/types';
 import type { HorizontalTableSchema } from '@/features/tables/models';
 
 const ASSETS_ORDER = [
@@ -26,7 +26,7 @@ export type AssetTableRow = {
 };
 
 export const createAssetsTableSchema = (
-  data: PlayerLegendData['assets']
+  data: PlayerLegendCardRow['data']['assets']
 ): HorizontalTableSchema<AssetTableRow> => ({
   caption: 'Таблиця активів',
   columns: [
