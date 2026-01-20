@@ -10,3 +10,4 @@ export * from './player-incomes';
 export * from './player-expenses';
 export * from './player-airbag';
 export * from './player-news';
+export * from './player-investments';

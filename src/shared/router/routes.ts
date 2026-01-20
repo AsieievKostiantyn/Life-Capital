@@ -19,6 +19,11 @@ export const GAME_ROUTES = {
       OVERVIEW: 'overview',
       MY: 'my',
     },
+    PLAYER_INVESTMENTS: {
+      ROOT: 'investments',
+      CURRENT: 'current',
+      MY: 'my',
+    },
     PLAYER_AIRBAG: 'airbag',
     PLAYER_NEWS: 'news',
   },

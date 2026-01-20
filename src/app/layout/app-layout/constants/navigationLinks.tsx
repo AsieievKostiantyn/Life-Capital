@@ -3,6 +3,7 @@ import {
   BookOpenText,
   BriefcaseBusiness,
   ChartNoAxesCombined,
+  Coins,
   Gamepad2,
   HandCoins,
   House,
@@ -57,12 +58,17 @@ export const playerNavLinks = [
   {
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INCOMES,
     label: 'Доходи',
-    icon: <ChartNoAxesCombined />,
+    icon: <Coins />,
   },
   {
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_EXPENSES.ROOT,
     label: 'Витрати',
     icon: <HandCoins />,
+  },
+  {
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INVESTMENTS.ROOT,
+    label: 'Інвестиції',
+    icon: <ChartNoAxesCombined />,
   },
   {
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_AIRBAG,

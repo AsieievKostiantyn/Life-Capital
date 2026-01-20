@@ -7,11 +7,14 @@ import {
   MyGamesPage,
   PasswordRecoveryPage,
   PlayerAirbagPage,
+  PlayerCurrentInvestmentPage,
   PlayerExpensesLayout,
   PlayerExpensesOverviewPage,
   PlayerIncomesPage,
+  PlayerInvestmentsLayout,
   PlayerLegendPage,
   PlayerMyExpensesPage,
+  PlayerMyInvestmentsPage,
   PlayerNewsPage,
   ProfilePage,
   RegisterPage,
@@ -107,6 +110,28 @@ export const userRoutes = [
           {
             path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_EXPENSES.MY,
             element: <PlayerMyExpensesPage />,
+          },
+        ],
+      },
+      {
+        path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INVESTMENTS.ROOT,
+        element: <PlayerInvestmentsLayout />,
+        children: [
+          {
+            index: true,
+            element: (
+              <Navigate
+                to={GAME_ROUTES.PLAYER_ROUTES.PLAYER_INVESTMENTS.CURRENT}
+              />
+            ),
+          },
+          {
+            path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INVESTMENTS.CURRENT,
+            element: <PlayerCurrentInvestmentPage />,
+          },
+          {
+            path: GAME_ROUTES.PLAYER_ROUTES.PLAYER_INVESTMENTS.MY,
+            element: <PlayerMyInvestmentsPage />,
           },
         ],
       },
