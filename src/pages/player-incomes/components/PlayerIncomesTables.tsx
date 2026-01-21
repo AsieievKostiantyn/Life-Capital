@@ -3,17 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 
 import { CARD_TYPES } from '@/features/cards/constants/constants';
 import { cardsQueryOptions } from '@/features/cards/query-options';
+import { PlayerBusinessEditableTable } from '@/features/investments';
 import {
   usePlayerFinances,
   usePlayerMeta,
 } from '@/features/player-state/stores';
 import { createEditableAssetsTableSchema } from '@/features/player-state/table-schemas/incomesAssets.schema';
-import { createPlayerBusinessEditableTableSchema } from '@/features/player-state/table-schemas/incomesBusiness.shema';
 import { createIncomesGeneralEditableTableSchema } from '@/features/player-state/table-schemas/incomesGeneral.schema';
 
 import { IncomesGeneralEditableTable } from './IncomesGeneralEditableTable';
 import { PlayerAssetsEditableTable } from './PlayerAssetsEditableTable';
-import { PlayerBusinessEditableTable } from './PlayerBusinessEditableTable';
 
 export const PlayerIncomesTables = () => {
   const setValueByPath = usePlayerFinances((s) => s.setValueByPath);
@@ -28,9 +27,6 @@ export const PlayerIncomesTables = () => {
     enabled: !!playerLegendId,
   });
 
-  const businessTableRowCount =
-    usePlayerFinances((s) => Object.keys(s.draft.business ?? {}).length) + 1;
-
   return (
     <>
       <Flex direction="column" gap="xl" wrap="wrap">
@@ -44,13 +40,7 @@ export const PlayerIncomesTables = () => {
           withTableBorder
           withColumnBorders
         />
-        <PlayerBusinessEditableTable
-          schema={createPlayerBusinessEditableTableSchema(
-            businessTableRowCount
-          )}
-          withTableBorder
-          withColumnBorders
-        />
+        <PlayerBusinessEditableTable />
         <Table variant="vertical" withTableBorder withColumnBorders>
           <Table.Tbody>
             <Table.Tr>

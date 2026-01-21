@@ -1,26 +1,27 @@
-import { Table, type TableProps } from '@mantine/core';
+import { Table } from '@mantine/core';
 
-import type { PlayerBusinessEditableTableRow } from '@/features/player-state/table-schemas/incomesBusiness.shema';
+import { usePlayerFinances } from '@/features/player-state/stores';
 import { EditableCell } from '@/features/tables/components/EditableCell';
-import type { EditableHorizontalTableSchema } from '@/features/tables/models';
 
-interface PlayerBusinessEditableTableProps extends Omit<TableProps, 'data'> {
-  schema: EditableHorizontalTableSchema<PlayerBusinessEditableTableRow>;
-}
+import { createPlayerBusinessEditableTableSchema } from '../table-schemas';
 
-export const PlayerBusinessEditableTable = ({
-  schema,
-  ...props
-}: PlayerBusinessEditableTableProps) => {
+export const PlayerBusinessEditableTable = () => {
+  const businessTableRowCount =
+    usePlayerFinances((s) => Object.keys(s.draft.business ?? {}).length) + 1;
+
+  const schema = createPlayerBusinessEditableTableSchema(businessTableRowCount);
+
   return (
     <>
-      <Table {...props}>
+      <Table withTableBorder withColumnBorders>
         {schema.caption && <Table.Caption>{schema.caption}</Table.Caption>}
 
         <Table.Thead>
           <Table.Tr>
             {schema.columns.map((col) => (
-              <Table.Th key={col.key}>{col.label}</Table.Th>
+              <Table.Th key={col.key} ta="center">
+                {col.label}
+              </Table.Th>
             ))}
           </Table.Tr>
         </Table.Thead>
