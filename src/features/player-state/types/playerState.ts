@@ -59,6 +59,16 @@ export type FinancesState = {
     }
   >;
 
+  shares?: Record<
+    number,
+    {
+      code?: string;
+      costOfTheSharePackage?: number;
+      costPerShare?: number;
+      numberOfShares?: number;
+    }
+  >;
+
   airbagAmount?: number;
   airbag?: Record<
     number,

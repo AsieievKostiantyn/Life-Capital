@@ -1,1 +1,2 @@
-export * from './businessTable.shema';
+export * from './businessTable.schema';
+export * from './sharesTable.schema';

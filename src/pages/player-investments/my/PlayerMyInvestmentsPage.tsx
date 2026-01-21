@@ -1,6 +1,9 @@
-import { Container, Title } from '@mantine/core';
+import { Container, Flex, Title } from '@mantine/core';
 
-import { PlayerBusinessEditableTable } from '@/features/investments';
+import {
+  PlayerBusinessEditableTable,
+  PlayerSharesEditableTable,
+} from '@/features/investments';
 
 export const PlayerMyInvestmentsPage = () => {
   return (
@@ -8,7 +11,10 @@ export const PlayerMyInvestmentsPage = () => {
       <Title order={2} ta="center" my="sm">
         Мої інвестиції
       </Title>
-      <PlayerBusinessEditableTable />
+      <Flex direction="column" gap="xl" wrap="wrap">
+        <PlayerBusinessEditableTable />
+        <PlayerSharesEditableTable />
+      </Flex>
     </Container>
   );
 };
