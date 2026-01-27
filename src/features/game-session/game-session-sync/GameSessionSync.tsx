@@ -52,6 +52,7 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
   useEffect(() => {
     if (!initialGameState) return;
     gameStateStore.setInitial({
+      currentInvestment: initialGameState.currentInvestment,
       newsList: initialGameState.newsList,
     });
   }, [initialGameState]);
@@ -90,6 +91,7 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
           if (!payload.new) return;
           const row = mapSnakeToCamel(payload.new) as GameState;
           gameStateStore.setInitial({
+            currentInvestment: row.currentInvestment,
             newsList: mapSnakeToCamel(row.newsList),
           });
         }

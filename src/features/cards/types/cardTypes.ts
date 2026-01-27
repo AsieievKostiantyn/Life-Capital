@@ -1,3 +1,4 @@
+import type { BusinessInvestment, Investment } from '@/features/investments';
 import type { PlayerLegendCardRow } from '@/features/player-legend/types';
 
 import { CARD_TYPES } from '../constants/constants';
@@ -6,7 +7,9 @@ export type CardsRow =
   | ExpenseCardRow
   | DemandCardRow
   | EventCardRow
-  | PlayerLegendCardRow;
+  | PlayerLegendCardRow
+  | InvestmentCardRow
+  | BigInvestmentCardRow;
 
 export type ExpenseCardRow = {
   id: string;
@@ -37,3 +40,15 @@ export type EventCardRow = {
   data: EventCardData;
 };
 type EventCardData = { id: string; title: string; description: string };
+
+export type InvestmentCardRow = {
+  id: string;
+  type: (typeof CARD_TYPES)['INVESTMENT'];
+  data: Investment;
+};
+
+export type BigInvestmentCardRow = {
+  id: string;
+  type: (typeof CARD_TYPES)['BIG_INVESTMENT'];
+  data: BusinessInvestment;
+};

@@ -7,6 +7,7 @@ export const useGameState = create<GameStateStore>((set) => ({
 
   setInitial: (data) => {
     set({
+      currentInvestment: data.currentInvestment,
       newsList: data.newsList,
     });
   },
