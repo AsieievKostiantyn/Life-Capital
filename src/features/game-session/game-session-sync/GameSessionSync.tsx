@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 
+import { useAuthStrict } from '@/features/auth';
 import { useGameSessionUsersId } from '@/features/game-session-users/hooks';
 import { gameStateQueryOptions } from '@/features/game_state/query-options';
 import { useGameState } from '@/features/game_state/stores';
@@ -12,6 +13,7 @@ import { usePlayerFinances } from '@/features/player-state/stores/playerFinances
 import type { PlayerState } from '@/features/player-state/types';
 
 import { TABLES } from '@/shared/constants';
+import { queryClient } from '@/shared/query-client';
 import { supabase } from '@/shared/supabase';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
@@ -24,6 +26,7 @@ interface GameSessionSyncProps {
 export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
   const gameSessionId = useGameSessionId();
   const gameSessionUsersId = useGameSessionUsersId();
+  const { user } = useAuthStrict();
   const { isHost } = useUserGameSessionStatus();
 
   const financesStore = usePlayerFinances();
@@ -45,6 +48,7 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
       playerLegendId: initialPlayerState.playerLegendId,
       expensesList: initialPlayerState.expensesList,
       metadata: initialPlayerState.metadata,
+      investmentDealIds: initialPlayerState.investmentDealIds,
     });
     financesStore.setInitial(initialPlayerState.finances);
   }, [initialPlayerState]);
@@ -71,10 +75,15 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
         (payload) => {
           if (!payload.new) return;
           const row = mapSnakeToCamel(payload.new) as PlayerState;
+          console.log('updating player state', row.investmentDealIds);
           metaStore.setInitial({
             playerLegendId: row.playerLegendId,
             expensesList: row.expensesList,
             metadata: row.metadata,
+            investmentDealIds: row.investmentDealIds,
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['deals', user.id],
           });
           financesStore.setInitial(row.finances);
         }

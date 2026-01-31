@@ -6,6 +6,8 @@ export type PlayerState = {
   finances: FinancesState;
   expensesList: string[];
   metadata: PlayerMetaData;
+
+  investmentDealIds: string[];
 };
 
 type PlayerMetaData = {

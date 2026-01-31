@@ -7,6 +7,7 @@ import { cardsQueryOptions } from '@/features/cards/query-options';
 import { useGameSessionId } from '@/features/game-session/hooks';
 import { gameStateMutationOptions } from '@/features/game_state/mutation-options';
 import { useGameState } from '@/features/game_state/stores';
+import { usePlayerInvestmentDeals } from '@/features/investment-deals';
 
 import { CurrentInvestmentCard } from './components';
 
@@ -21,6 +22,8 @@ export const PlayerCurrentInvestmentPage = () => {
     ...cardsQueryOptions.getCardByIdQueryOption(investmentId!),
     enabled: !!investmentId,
   });
+
+  const deals = usePlayerInvestmentDeals();
 
   const setInvestmentMutation = useMutation({
     ...gameStateMutationOptions.setCurrentInvestment,
