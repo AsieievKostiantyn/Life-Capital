@@ -75,7 +75,6 @@ export const GameSessionSync = ({ children }: GameSessionSyncProps) => {
         (payload) => {
           if (!payload.new) return;
           const row = mapSnakeToCamel(payload.new) as PlayerState;
-          console.log('updating player state', row.investmentDealIds);
           metaStore.setInitial({
             playerLegendId: row.playerLegendId,
             expensesList: row.expensesList,

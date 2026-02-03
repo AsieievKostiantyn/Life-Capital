@@ -1,3 +1,20 @@
+create or replace function trigger_players_state(
+  p_game_session_id uuid
+)
+returns void
+language plpgsql
+as $$
+begin
+  update player_state
+  set investment_deal_ids = investment_deal_ids
+  where game_session_users_id in (
+    select id
+    from game_session_users
+    where game_session_id = p_game_session_id
+  );
+end;
+$$;
+
 create or replace function start_investment_deal(
   p_game_session_id uuid,
   p_user_id uuid,
@@ -48,7 +65,7 @@ begin
   set current_investment =
     jsonb_set(
       current_investment,
-      '{isAllowedToBuy}',
+      '{isAllowedToDeal}',
       'true'::jsonb,
       true
     )
@@ -164,7 +181,7 @@ $$;
 
 
 
-create or replace function update_investment_terms(
+create or replace function confirm_participant_note(
   p_deal_id uuid,
   p_user_id uuid,
   p_notes text
@@ -176,32 +193,7 @@ begin
   update investment_deal_participants
   set
     notes = p_notes,
-    is_note_confirmed = false
-  where deal_id = p_deal_id
-    and user_id = p_user_id;
-
-  update player_state
-  set investment_deal_ids = investment_deal_ids
-  where game_session_users_id in (
-    select id
-    from game_session_users
-    where game_session_id = p_game_session_id
-  );
-end;
-$$;
-
-
-
-create or replace function confirm_participant_note(
-  p_deal_id uuid,
-  p_user_id uuid
-)
-returns void
-language plpgsql
-as $$
-begin
-  update investment_deal_participants
-  set is_note_confirmed = true
+    is_note_confirmed = true
   where deal_id = p_deal_id
     and user_id = p_user_id;
 
@@ -219,64 +211,65 @@ $$;
 
 create or replace function remove_participant(
   p_deal_id uuid,
-  p_user_id uuid
+  p_target_user_id uuid
 )
 returns void
 language plpgsql
 as $$
 declare
+  v_game_session_id uuid;
   v_game_session_users_id uuid;
 begin
   if not exists (
     select 1
     from investment_deals
     where id = p_deal_id
-      and owner_id = p_user_id
+      and owner_id = auth.uid()
   ) then
-    raise exception 'Only owner can sell investment';
+    raise exception 'Only owner can remove participant';
   end if;
+
+  select game_session_id
+  into v_game_session_id
+  from investment_deals
+  where id = p_deal_id;
 
   delete from investment_deal_participants
   where deal_id = p_deal_id
-    and user_id = p_user_id;
+    and user_id = p_target_user_id;
 
   select id
   into v_game_session_users_id
   from game_session_users
-  where user_id = p_user_id
-    and game_session_id = p_game_session_id;
+  where user_id = p_target_user_id
+    and game_session_id = v_game_session_id;
 
   update player_state
   set investment_deal_ids =
     array_remove(investment_deal_ids, p_deal_id)
   where game_session_users_id = v_game_session_users_id;
 
-  update player_state
-  set investment_deal_ids = investment_deal_ids
-  where game_session_users_id in (
-    select id
-    from game_session_users
-    where game_session_id = p_game_session_id
-  );
+  perform trigger_players_state(v_game_session_id);
 end;
 $$;
 
 
 
 create or replace function confirm_deal(
-  p_deal_id uuid,
-  p_owner_id uuid
+  p_deal_id uuid
 )
 returns void
 language plpgsql
 as $$
 declare
   v_not_confirmed int;
+  v_game_session_id uuid;
 begin
   if not exists (
-    select 1 from investment_deals
+    select 1
+    from investment_deals
     where id = p_deal_id
-      and owner_id = p_owner_id
+      and owner_id = auth.uid()
   ) then
     raise exception 'Only owner can confirm deal';
   end if;
@@ -295,21 +288,20 @@ begin
   set status = 'confirmed'
   where id = p_deal_id;
 
-  update player_state
-  set investment_deal_ids = investment_deal_ids
-  where game_session_users_id in (
-    select id
-    from game_session_users
-    where game_session_id = p_game_session_id
-  );
+  select game_session_id
+  into v_game_session_id
+  from investment_deals
+  where id = p_deal_id;
+
+  perform trigger_players_state(v_game_session_id);
 end;
 $$;
 
 
 
-create or replace function sell_investment(
+create or replace function set_deal_owner(
   p_deal_id uuid,
-  p_user_id uuid
+  p_new_owner_id uuid
 )
 returns void
 language plpgsql
@@ -319,21 +311,47 @@ begin
     select 1
     from investment_deals
     where id = p_deal_id
-      and owner_id = p_user_id
+      and owner_id = auth.uid()
   ) then
-    raise exception 'Only owner can sell investment';
+    raise exception 'Only owner can change deal owner';
   end if;
 
-  update player_state
-  set investment_deal_ids =
-    array_remove(investment_deal_ids, p_deal_id)
-  where game_session_users_id in (
-    select id
-    from game_session_users
-    where game_session_id = p_game_session_id
-  );
-
-  delete from investment_deals
+  update investment_deals
+  set owner_id = p_new_owner_id
   where id = p_deal_id;
+end;
+$$;
+
+
+
+create or replace function sell_investment(
+  p_deal_id uuid
+)
+returns void
+language plpgsql
+as $$
+declare
+  v_game_session_id uuid;
+begin
+  if not exists (
+    select 1
+    from investment_deals
+    where id = p_deal_id
+      and owner_id = auth.uid()
+      and status = 'confirmed'
+  ) then
+    raise exception 'Only owner can sell confirmed investment';
+  end if;
+
+  update investment_deals
+  set status = 'sold'
+  where id = p_deal_id;
+
+  select game_session_id
+  into v_game_session_id
+  from investment_deals
+  where id = p_deal_id;
+
+  perform trigger_players_state(v_game_session_id);
 end;
 $$;

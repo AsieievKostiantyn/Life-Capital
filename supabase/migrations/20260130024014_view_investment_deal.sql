@@ -4,7 +4,7 @@ select
   d.game_session_id,
   d.owner_id,
   d.status,
-  d.created_at,ц
+  d.created_at,
 
   jsonb_build_object(
     'id', c.id,

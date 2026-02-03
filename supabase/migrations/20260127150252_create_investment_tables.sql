@@ -3,7 +3,7 @@ create table investment_deals (
   game_session_id uuid not null,
   card_id uuid not null,
   owner_id uuid not null,
-  status text not null check (status in ('negotiation', 'confirmed')),
+  status text not null check (status in ('negotiation', 'confirmed', 'sold')),
   created_at timestamptz not null default now()
 );
 

@@ -24,5 +24,5 @@ type NewItem = {
 type CurrentInvestment = {
   cardId: string;
   ownerId: string;
-  isAllowedToBuy: boolean;
+  isAllowedToDeal: boolean;
 };

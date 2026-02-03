@@ -4,6 +4,7 @@ import { useAuthStrict } from '@/features/auth';
 import { usePlayerMeta } from '@/features/player-state/stores';
 
 import { investmentDealsQueryOptions } from '../query-options';
+import type { InvestmentDealFullView } from '../types';
 
 export const usePlayerInvestmentDeals = () => {
   const { user } = useAuthStrict();
@@ -16,6 +17,5 @@ export const usePlayerInvestmentDeals = () => {
     )
   );
 
-  console.log('data', data);
-  return data;
+  return data ? data : ([] as InvestmentDealFullView[]);
 };

@@ -1,4 +1,4 @@
-import { Button, Container, Divider, Flex, Stack } from '@mantine/core';
+import { Button, Container, Divider, Flex, Stack, Title } from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
@@ -9,7 +9,7 @@ import { gameStateMutationOptions } from '@/features/game_state/mutation-options
 import { useGameState } from '@/features/game_state/stores';
 import { usePlayerInvestmentDeals } from '@/features/investment-deals';
 
-import { CurrentInvestmentCard } from './components';
+import { CurrentInvestmentCard, InvestmentDealsList } from './components';
 
 export const PlayerCurrentInvestmentPage = () => {
   const gameSessionId = useGameSessionId();
@@ -22,8 +22,6 @@ export const PlayerCurrentInvestmentPage = () => {
     ...cardsQueryOptions.getCardByIdQueryOption(investmentId!),
     enabled: !!investmentId,
   });
-
-  const deals = usePlayerInvestmentDeals();
 
   const setInvestmentMutation = useMutation({
     ...gameStateMutationOptions.setCurrentInvestment,
@@ -41,8 +39,13 @@ export const PlayerCurrentInvestmentPage = () => {
     investmentCardRow?.type === CARD_TYPES.BIG_INVESTMENT ||
     investmentCardRow?.type === CARD_TYPES.INVESTMENT;
 
+  const deals = usePlayerInvestmentDeals();
+
   return (
     <Container maw={800} w="100%" px="0" mt="md">
+      <Title order={2} ta="center" my="sm">
+        Поточна інвестиція
+      </Title>
       <Stack gap="md">
         <Flex justify="center">
           <Button variant="default" onClick={() => handleSetInvestment(false)}>
@@ -56,8 +59,13 @@ export const PlayerCurrentInvestmentPage = () => {
         {investmentCardRow && isInvestment && (
           <CurrentInvestmentCard investment={investmentCardRow.data} />
         )}
-
-        <Divider />
+      </Stack>
+      <Divider my="md" />
+      <Title order={2} ta="center" my="sm">
+        Мої угоди
+      </Title>
+      <Stack gap="md">
+        <InvestmentDealsList deals={deals} />
       </Stack>
     </Container>
   );

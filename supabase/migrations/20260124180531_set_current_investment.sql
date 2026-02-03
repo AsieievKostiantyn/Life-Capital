@@ -33,7 +33,7 @@ begin
     set current_investment = jsonb_build_object(
         'cardId', v_card.id,
         'ownerId', p_owner_id,
-        'isAllowedToBuy', false
+        'isAllowedToDeal', false
     )
     where id = v_game_state_id;
 end;
@@ -71,7 +71,7 @@ begin
     set current_investment = jsonb_build_object(
         'cardId', v_card.id,
         'ownerId', p_owner_id,
-        'isAllowedToBuy', false
+        'isAllowedToDeal', false
     )
     where id = v_game_state_id;
 end;

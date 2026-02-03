@@ -62,12 +62,12 @@ const Actions = () => {
   };
 
   const isPartnershipButtonShown =
-    currentInvestment.ownerId === user.id && !currentInvestment.isAllowedToBuy;
+    currentInvestment.ownerId === user.id && !currentInvestment.isAllowedToDeal;
 
   const isInvestButtonShown =
-    currentInvestment.isAllowedToBuy || currentInvestment.ownerId === user.id;
+    currentInvestment.isAllowedToDeal || currentInvestment.ownerId === user.id;
 
-  if (currentInvestment.isAllowedToBuy)
+  if (currentInvestment.isAllowedToDeal)
     return (
       <Button
         variant="default"

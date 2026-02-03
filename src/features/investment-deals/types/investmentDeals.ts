@@ -1,4 +1,7 @@
-import type { InvestmentCardRow } from '@/features/cards/types/cardTypes';
+import type {
+  BigInvestmentCardRow,
+  InvestmentCardRow,
+} from '@/features/cards/types/cardTypes';
 
 export type InvestmentDeal = {
   id: string;
@@ -13,9 +16,9 @@ export type InvestmentDealFullView = {
   dealId: string;
   gameSessionId: string;
   ownerId: string;
-  status: 'negotiation' | 'confirmed';
+  status: 'negotiation' | 'confirmed' | 'sold';
   createdAt: string;
-  card: InvestmentCardRow;
+  card: InvestmentCardRow | BigInvestmentCardRow;
   participants: DealParticipant[];
 };
 type DealParticipant = {
