@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 
 import { investmentDealsApi } from '../api';
 import type {
-  ConfirmDealPayload,
   ConfirmParticipantNotePayload,
   RemoveParticipantPayload,
   SetDealOwnerPayload,
@@ -28,10 +27,9 @@ export const useDealMutations = (dealId: string) => {
   });
 
   const confirmDealMutation = useMutation({
-    mutationFn: (payload: Omit<ConfirmDealPayload, 'dealId'>) =>
+    mutationFn: () =>
       investmentDealsApi.confirmDeal({
         dealId,
-        ...payload,
       }),
   });
 

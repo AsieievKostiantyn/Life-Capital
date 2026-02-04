@@ -189,6 +189,8 @@ create or replace function confirm_participant_note(
 returns void
 language plpgsql
 as $$
+declare
+  v_game_session_id uuid;
 begin
   update investment_deal_participants
   set
@@ -197,13 +199,12 @@ begin
   where deal_id = p_deal_id
     and user_id = p_user_id;
 
-  update player_state
-  set investment_deal_ids = investment_deal_ids
-  where game_session_users_id in (
-    select id
-    from game_session_users
-    where game_session_id = p_game_session_id
-  );
+  select game_session_id
+  into v_game_session_id
+  from investment_deals
+  where id = p_deal_id;
+
+  perform trigger_players_state(v_game_session_id);
 end;
 $$;
 
@@ -306,6 +307,8 @@ create or replace function set_deal_owner(
 returns void
 language plpgsql
 as $$
+declare
+  v_game_session_id uuid;
 begin
   if not exists (
     select 1
@@ -319,6 +322,13 @@ begin
   update investment_deals
   set owner_id = p_new_owner_id
   where id = p_deal_id;
+
+  select game_session_id
+  into v_game_session_id
+  from investment_deals
+  where id = p_deal_id;
+
+  perform trigger_players_state(v_game_session_id);
 end;
 $$;
 

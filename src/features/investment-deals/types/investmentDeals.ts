@@ -24,6 +24,6 @@ export type InvestmentDealFullView = {
 type DealParticipant = {
   userId: string;
   displayName: string;
-  note: string;
+  notes: string;
   isNoteConfirmed: boolean;
 };
