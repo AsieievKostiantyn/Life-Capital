@@ -38,6 +38,11 @@ export const userNavLinks = [
 
 export const hostNavLinks = [
   {
+    href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_NEWS,
+    label: 'Новини',
+    icon: <Newspaper />,
+  },
+  {
     href: USER_ROUTES.HOME,
     label: 'На головну',
     icon: <House />,
