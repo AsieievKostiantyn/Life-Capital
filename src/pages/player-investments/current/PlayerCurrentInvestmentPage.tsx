@@ -40,6 +40,7 @@ export const PlayerCurrentInvestmentPage = () => {
     investmentCardRow?.type === CARD_TYPES.INVESTMENT;
 
   const deals = usePlayerInvestmentDeals();
+  const unsoldDeals = deals.filter((deal) => deal.status !== 'sold');
 
   return (
     <Container maw={800} w="100%" px="0" mt="md">
@@ -65,7 +66,7 @@ export const PlayerCurrentInvestmentPage = () => {
         Мої угоди
       </Title>
       <Stack gap="md">
-        <InvestmentDealsList deals={deals} />
+        <InvestmentDealsList deals={unsoldDeals} />
       </Stack>
     </Container>
   );

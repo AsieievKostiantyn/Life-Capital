@@ -41,10 +41,18 @@ export const useDealMutations = (dealId: string) => {
       }),
   });
 
+  const sellInvestment = useMutation({
+    mutationFn: () =>
+      investmentDealsApi.sellInvestment({
+        dealId,
+      }),
+  });
+
   return {
     confirmParticipantNoteMutation,
     removeParticipantMutation,
     confirmDealMutation,
     setDealOwner,
+    sellInvestment,
   };
 };

@@ -110,6 +110,19 @@ begin
   )
   returning id into v_deal_id;
 
+  insert into investment_deal_participants (
+    deal_id,
+    user_id,
+    notes,
+    is_note_confirmed
+  )
+  values (
+    v_deal_id,
+    p_user_id,
+    '100%',
+    true
+  );
+
   select id
   into v_game_session_users_id
   from game_session_users

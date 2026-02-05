@@ -7,6 +7,7 @@ import type {
   ConfirmParticipantNotePayload,
   JoinInvestmentDealPayload,
   RemoveParticipantPayload,
+  SellInvestmentPayload,
   SetDealOwnerPayload,
   StartInvestmentDealPayload,
 } from '../types/api';
@@ -45,5 +46,10 @@ export const investmentDealsMutationOptions = {
   setDealOwner: mutationOptions({
     mutationFn: (payload: SetDealOwnerPayload) =>
       investmentDealsApi.setDealOwner(payload),
+  }),
+
+  sellInvestment: mutationOptions({
+    mutationFn: (payload: SellInvestmentPayload) =>
+      investmentDealsApi.sellInvestment(payload),
   }),
 };

@@ -1,31 +1,36 @@
 import { useMemo } from 'react';
 
 import {
-  InvestmentDealCard,
   type InvestmentDealFullView,
+  MyInvestmentCard,
 } from '@/features/investment-deals';
 import { usePlayerMeta } from '@/features/player-state/stores';
 
-interface InvestmentDealsListProps {
+interface MyInvestmentsListProps {
   deals: InvestmentDealFullView[];
 }
 
-export const InvestmentDealsList = ({ deals }: InvestmentDealsListProps) => {
+export const MyInvestmentsList = ({ deals }: MyInvestmentsListProps) => {
   const investmentDealIds = usePlayerMeta((s) => s.investmentDealIds);
 
   const sortedDeals = useMemo(() => {
     const dealsMap = new Map(deals.map((deal) => [deal.dealId, deal]));
 
-    return investmentDealIds
+    const ordered = investmentDealIds
       .map((id) => dealsMap.get(id))
-      .filter((deal): deal is InvestmentDealFullView => Boolean(deal))
-      .reverse();
+      .filter((deal): deal is InvestmentDealFullView => Boolean(deal));
+
+    const activeDeals = ordered.filter((deal) => deal.status !== 'sold');
+
+    const soldDeals = ordered.filter((deal) => deal.status === 'sold');
+
+    return [...soldDeals, ...activeDeals].reverse();
   }, [deals, investmentDealIds]);
 
   return (
     <>
       {sortedDeals.map((deal) => (
-        <InvestmentDealCard key={deal.dealId} deal={deal} />
+        <MyInvestmentCard key={deal.dealId} deal={deal} />
       ))}
     </>
   );
