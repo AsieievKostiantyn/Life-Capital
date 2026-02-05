@@ -13,6 +13,7 @@ import { Outlet } from 'react-router-dom';
 import { AppShell, Burger, Flex, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
+import { GlobalSaveButton } from '@/features/game-session/components';
 import { useUserGameSessionStatus } from '@/features/game-session/hooks';
 
 // import { useI18n } from '@/features/i18n';
@@ -118,6 +119,7 @@ export const AppLayout = () => {
 
       <AppShell.Main>
         <Outlet />
+        {isInGameSession && <GlobalSaveButton />}
       </AppShell.Main>
     </AppShell>
   );
