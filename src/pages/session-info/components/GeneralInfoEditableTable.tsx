@@ -1,25 +1,17 @@
-import { Button, NumberInput, Table, type TableProps } from '@mantine/core';
+import { NumberInput, Table } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
 import { cardsQueryOptions } from '@/features/cards/query-options';
-import { useGameSessionUsersId } from '@/features/game-session-users/hooks';
 import { usePlayerMeta } from '@/features/player-state/stores';
 import { usePlayerFinances } from '@/features/player-state/stores/playerFinancesStore';
-import type { EditableVerticalTableSchema } from '@/features/tables/models';
+import { createGeneralInfoEditableTableSchema } from '@/features/player-state/table-schemas/generalInfoEditable.schema';
 
 import { getByPath } from '@/shared/utils/path';
 
-interface GeneralInfoEditableTableProps extends Omit<TableProps, 'data'> {
-  data: EditableVerticalTableSchema;
-}
-
-export const GeneralInfoEditableTable = ({
-  data,
-  ...props
-}: GeneralInfoEditableTableProps) => {
+export const GeneralInfoEditableTable = () => {
   const store = usePlayerFinances();
-  const gameSessionUsersId = useGameSessionUsersId();
   const playerLegendId = usePlayerMeta((state) => state.playerLegendId);
+  const schema = createGeneralInfoEditableTableSchema();
 
   const { data: playerLegendCardsRow } = useQuery({
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -29,18 +21,11 @@ export const GeneralInfoEditableTable = ({
 
   return (
     <>
-      <Button
-        variant="default"
-        onClick={() => store.save(gameSessionUsersId)}
-        disabled={!store.isDirty}
-      >
-        Зберегти
-      </Button>
-      <Table variant="vertical" {...props}>
-        <Table.Caption>{data.caption}</Table.Caption>
+      <Table variant="vertical" withTableBorder withColumnBorders>
+        <Table.Caption>{schema.caption}</Table.Caption>
 
         <Table.Tbody>
-          {data.rows.map((row) => (
+          {schema.rows.map((row) => (
             <Table.Tr key={row.label}>
               <Table.Th w={320}>{row.label}</Table.Th>
               <Table.Td>

@@ -10,6 +10,10 @@ const GENERAL_INFO_ROWS = [
     hintPath: 'salary',
   },
   {
+    path: 'generalInfo.cash',
+    label: 'Готівка',
+  },
+  {
     path: 'generalInfo.childSupport',
     label: 'Допомога на дітей',
   },

@@ -3,7 +3,11 @@ import { supabase } from '@/shared/supabase';
 import type { AppUser } from '@/shared/types';
 import { mapSnakeToCamel } from '@/shared/utils/caseMapper';
 
-import type { CreateGameSessionVariables, GameSession } from '../types';
+import type {
+  CreateGameSessionVariables,
+  GameSession,
+  GameSessionOverviewView,
+} from '../types';
 
 export const gameSessionApi = {
   createGameSession: async (
@@ -51,5 +55,14 @@ export const gameSessionApi = {
 
     if (error) throw error;
     return mapSnakeToCamel(data);
+  },
+
+  getGameSessionOverview: async (gameSessionId: string) => {
+    const { data, error } = await supabase.rpc('get_game_session_overview', {
+      p_game_session_id: gameSessionId,
+    });
+
+    if (error) throw error;
+    return mapSnakeToCamel(data) as GameSessionOverviewView;
   },
 };

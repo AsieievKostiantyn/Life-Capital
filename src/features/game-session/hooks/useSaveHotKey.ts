@@ -12,9 +12,8 @@ export const useSaveHotKey = () => {
     const handler = (e: KeyboardEvent) => {
       const isCtrlOrCmd = e.ctrlKey || e.metaKey;
       const isShift = e.shiftKey;
-      const isS = e.key.toLowerCase() === 's';
 
-      if (isCtrlOrCmd && isShift && isS) {
+      if (isCtrlOrCmd && isShift && e.code === 'KeyS') {
         e.preventDefault();
 
         if (!isDirty) return;

@@ -19,4 +19,12 @@ export const gameSessionQueryOptions = {
       queryFn: () => gameSessionApi.getGameSessionById(gameSessionId),
     });
   },
+
+  getGameSessionOverview: (gameSessionId: GameSession['id']) => {
+    return queryOptions({
+      queryKey: ['game-session-overview', gameSessionId],
+      queryFn: () => gameSessionApi.getGameSessionOverview(gameSessionId),
+      staleTime: 5 * 60 * 1000,
+    });
+  },
 };
