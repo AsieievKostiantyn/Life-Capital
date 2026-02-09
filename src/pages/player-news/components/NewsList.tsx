@@ -1,4 +1,4 @@
-import { Box, Overlay, Stack } from '@mantine/core';
+import { Box, Overlay, Stack, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
 import { DemandCard, EventCard } from '@/features/cards/components';
@@ -31,6 +31,9 @@ export const NewsList = () => {
   const lastCardRow = sortedCardsRowList?.at(-1);
 
   const isOverlayShown = sortedCardsRowList.length >= 5;
+
+  if (newsList.length === 0)
+    return <Text ta="center">Дошка новин порожня</Text>;
 
   return (
     <>

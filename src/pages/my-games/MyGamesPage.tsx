@@ -1,7 +1,17 @@
 import { Link } from 'react-router-dom';
 
-import { Badge, Card, Flex, Group, Image, Text } from '@mantine/core';
-import { Button } from '@mantine/core';
+import { Gamepad, PlusIcon } from 'lucide-react';
+
+import {
+  Badge,
+  Card,
+  Center,
+  Flex,
+  Group,
+  Image,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
@@ -27,16 +37,32 @@ export const MyGamesPage = () => {
     <>
       <CreateGameModal user={user} opened={opened} close={close} />
 
-      <div>MyGamesPage</div>
-
-      {user.role === 'host' && (
-        <Button variant="default" onClick={open}>
-          Створити гру
-        </Button>
-      )}
-
       <Flex gap="lg" wrap="wrap" mt={10}>
-        {gameSessions.length > 0 ? (
+        {user.role === 'host' && (
+          <>
+            <Card
+              onClick={open}
+              shadow="sm"
+              padding="lg"
+              radius="md"
+              withBorder
+              w={280}
+              style={{
+                cursor: 'pointer',
+                borderStyle: 'dashed',
+              }}
+            >
+              <Center h="100%">
+                <Stack align="center" gap="xs">
+                  <PlusIcon size={40} />
+                  <Text fw={500}>Створити гру</Text>
+                </Stack>
+              </Center>
+            </Card>
+          </>
+        )}
+
+        {gameSessions.length > 0 &&
           gameSessions.map((gameSession) => (
             <Card
               component={Link}
@@ -67,11 +93,25 @@ export const MyGamesPage = () => {
                 {new Date(gameSession.createdAt).toLocaleDateString()}
               </Text>
             </Card>
-          ))
-        ) : (
-          <p>У вас немає ігрових сесій</p>
-        )}
+          ))}
       </Flex>
+
+      {gameSessions.length === 0 && (
+        <Center mt={80}>
+          <Stack align="center" gap="sm">
+            <Gamepad size={48} opacity={0.6} />
+
+            <Text fw={600} size="lg">
+              У вас ще немає ігрових сесій
+            </Text>
+
+            <Text c="dimmed" ta="center" maw={420}>
+              Ігрові сесії зʼявляться після того, як ведучий створить гру та
+              додасть до неї користувачів.
+            </Text>
+          </Stack>
+        </Center>
+      )}
     </>
   );
 };

@@ -1,4 +1,12 @@
-import { Button, Container, Divider, Flex, Stack, Title } from '@mantine/core';
+import {
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuthStrict } from '@/features/auth';
@@ -65,9 +73,13 @@ export const PlayerCurrentInvestmentPage = () => {
       <Title order={2} ta="center" my="sm">
         Мої угоди
       </Title>
-      <Stack gap="md">
-        <InvestmentDealsList deals={unsoldDeals} />
-      </Stack>
+      {unsoldDeals.length > 0 ? (
+        <Stack gap="md">
+          <InvestmentDealsList deals={unsoldDeals} />
+        </Stack>
+      ) : (
+        <Text ta="center">У вас немає активних угод</Text>
+      )}
     </Container>
   );
 };

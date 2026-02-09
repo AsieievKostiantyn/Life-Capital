@@ -1,12 +1,17 @@
 import { Link, useParams } from 'react-router-dom';
 
-import { Gamepad2 } from 'lucide-react';
+import { Gamepad2, House } from 'lucide-react';
 
-import { Flex, Indicator, NavLink as MantineNavLink } from '@mantine/core';
+import {
+  Divider,
+  Flex,
+  Indicator,
+  NavLink as MantineNavLink,
+} from '@mantine/core';
 
 import { useHasUnreadNews } from '@/features/player-state/hooks/useHasUnreadNews';
 
-import { GAME_ROUTES } from '@/shared/router';
+import { GAME_ROUTES, USER_ROUTES } from '@/shared/router';
 
 import type {
   hostNavLinks,
@@ -55,6 +60,19 @@ export const Navbar = ({ links, close }: NavBarProps) => {
           />
         </Indicator>
       ))}
+
+      {gameSessionId && (
+        <>
+          <Divider my="md" />
+          <MantineNavLink
+            component={Link}
+            to={USER_ROUTES.HOME}
+            label="На головну"
+            leftSection={<House />}
+            onClick={close}
+          />
+        </>
+      )}
     </Flex>
   );
 };

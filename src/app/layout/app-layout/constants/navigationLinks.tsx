@@ -42,11 +42,6 @@ export const hostNavLinks = [
     label: 'Новини',
     icon: <Newspaper />,
   },
-  {
-    href: USER_ROUTES.HOME,
-    label: 'На головну',
-    icon: <House />,
-  },
 ] as const;
 
 export const playerNavLinks = [
@@ -79,10 +74,5 @@ export const playerNavLinks = [
     href: GAME_ROUTES.PLAYER_ROUTES.PLAYER_AIRBAG,
     label: 'Подушка безпеки',
     icon: <BriefcaseBusiness />,
-  },
-  {
-    href: USER_ROUTES.HOME,
-    label: 'На головну',
-    icon: <House />,
   },
 ] as const;

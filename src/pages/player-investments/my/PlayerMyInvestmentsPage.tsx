@@ -1,4 +1,4 @@
-import { Container, Flex, Stack, Title } from '@mantine/core';
+import { Container, Flex, Stack, Text, Title } from '@mantine/core';
 
 import { usePlayerInvestmentDeals } from '@/features/investment-deals';
 import {
@@ -21,9 +21,13 @@ export const PlayerMyInvestmentsPage = () => {
       <Title order={2} ta="center" my="sm">
         Мої інвестиції
       </Title>
-      <Stack gap="md">
-        <MyInvestmentsList deals={confirmedDeals} />
-      </Stack>
+      {confirmedDeals.length > 0 ? (
+        <Stack gap="md">
+          <MyInvestmentsList deals={confirmedDeals} />
+        </Stack>
+      ) : (
+        <Text ta="center">У вас немає жодної інвестиції</Text>
+      )}
     </Container>
   );
 };
