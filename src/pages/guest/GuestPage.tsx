@@ -22,6 +22,8 @@ import GermanFlag from '@/static/images/svg/de.svg';
 import GreatBritainFlag from '@/static/images/svg/gb.svg';
 import UkrainianFlag from '@/static/images/svg/ua.svg';
 
+import { HeroSection } from './components';
+
 export const GuestPage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const i18n = useI18n();
@@ -32,7 +34,19 @@ export const GuestPage = () => {
   };
 
   return (
-    <AppShell header={{ height: 60 }}>
+    <AppShell
+      header={{ height: 60, offset: false }}
+      styles={{
+        header: {
+          maxWidth: 1400,
+          width: '100%',
+          margin: '8px auto',
+          borderRadius: 20,
+          backdropFilter: 'blur(10px)',
+          background: 'rgba(0,0,0,0.4)',
+        },
+      }}
+    >
       <AppShell.Header>
         <Flex justify="space-between" align="center" px="md" w="100%" h="100%">
           <div>
@@ -45,7 +59,7 @@ export const GuestPage = () => {
               <Menu.Target>
                 <ActionIcon
                   variant="subtle"
-                  color={colorScheme === 'dark' ? '#ffffff' : '#000000'}
+                  color="#ffffff"
                   radius="xl"
                   size="xl"
                   aria-label="Select language"
@@ -74,7 +88,7 @@ export const GuestPage = () => {
 
             <ActionIcon
               variant="subtle"
-              color={colorScheme === 'dark' ? '#ffffff' : '#000000'}
+              color="#ffffff"
               radius="xl"
               size="xl"
               onClick={toggleColorScheme}
@@ -93,7 +107,9 @@ export const GuestPage = () => {
           </Group>
         </Flex>
       </AppShell.Header>
-      <AppShell.Main></AppShell.Main>
+      <AppShell.Main>
+        <HeroSection />
+      </AppShell.Main>
     </AppShell>
   );
 };
