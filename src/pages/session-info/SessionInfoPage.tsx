@@ -1,17 +1,15 @@
 import { Container, Title } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
+import { useGameSessionUsersId } from '@/features/game-session-users/hooks';
 import { GameSessionOverviewCard } from '@/features/game-session/components';
-import {
-  useGameSessionId,
-  useUserGameSessionStatus,
-} from '@/features/game-session/hooks';
-import { gameSessionQueryOptions } from '@/features/game-session/query-options';
+import { useUserGameSessionStatus } from '@/features/game-session/hooks';
+import { gameSessionQueryOptions } from '@/features/game-session/query-options/gameSessionQueryOptions';
 
 import { GeneralInfoEditableTable } from './components';
 
 export const SessionInfoPage = () => {
-  const gameSessionId = useGameSessionId();
+  const gameSessionId = useGameSessionUsersId();
   const { data: overview } = useQuery(
     gameSessionQueryOptions.getGameSessionOverview(gameSessionId)
   );

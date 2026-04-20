@@ -1,6 +1,3 @@
-create extension if not exists "uuid-ossp";
-create extension if not exists "pgcrypto";
-
 do $$
 begin
     if not exists (select 1 from pg_type where typname = 'user_role') then
@@ -9,7 +6,7 @@ begin
 end$$;
 
 create table if not exists public.users (
-    id           uuid primary key default uuid_generate_v4(),
+    id           uuid primary key default gen_random_uuid(),
     display_name text not null,
     email        text not null unique,
     avatar_url   text,
