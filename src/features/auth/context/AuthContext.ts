@@ -1,9 +1,9 @@
 import { createContext } from 'react';
 
-import { type AppUser } from '../../../shared/types/user';
+import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
 
 interface AuthContextType {
-  user: AppUser | null;
+  user: SupabaseAuthUser | null;
   isLoading: boolean;
   signInWithGoogle: () => void;
   signIn: (email: string, password: string) => Promise<void>;

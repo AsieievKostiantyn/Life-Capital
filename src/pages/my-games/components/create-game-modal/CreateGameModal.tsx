@@ -11,13 +11,15 @@ import {
   TextInput,
   ThemeIcon,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { gameSessionApi } from '@/features/game-session/api';
-import type { Player } from '@/features/game-session/types';
-import { userApi } from '@/features/user/api';
+import { gameSessionMutationOptions } from '@/features/game-session/mutation-options';
+import type { ParticipantId } from '@/features/game-session/types';
+import { userQueryOptions } from '@/features/user/query-options';
 
+import { ERROR_TITLES } from '@/shared/constants';
 import type { AppUser } from '@/shared/types';
+import { showErrorNotification } from '@/shared/ui';
 
 import { renderMultiSelectOption } from './render-user-option';
 import { type UserOptionsMap, mapUsersToOptions } from './user-option';
@@ -39,28 +41,43 @@ export const CreateGameModal = ({
   close,
   user,
 }: CreateGameModalProps) => {
-  const [
-    visibleLoadingOverlay,
-    { open: openLoadingOverlay, close: closeLoadingOverlay },
-  ] = useDisclosure(false);
-  const [allUsers, setAllUsers] = useState<AppUser[] | null>(null);
-  const [loadingState, setLoadingState] = useState<
-    'idle' | 'loading' | 'success' | 'error'
-  >('idle');
+  const [showOverlay, setShowOverlay] = useState(false);
   const [sessionName, setSessionName] = useState('');
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [participantIds, setParticipantIds] = useState<ParticipantId[]>([]);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
+
+  const { data: allUsers } = useQuery(
+    userQueryOptions.getAllUsersQueryOption()
+  );
 
   const userOptionsMap: UserOptionsMap = useMemo(() => {
     return allUsers ? mapUsersToOptions(allUsers) : {};
   }, [allUsers]);
 
-  const onEnterTransitionEnd = async () => {
-    if (!allUsers) {
-      const data = await userApi.getAllUsers();
-      setAllUsers(data);
-    }
-  };
+  const createGameSession = useMutation({
+    ...gameSessionMutationOptions.createGameSessionMutationOptions,
+    onSuccess: (data, variables, onMutateResult, context) => {
+      gameSessionMutationOptions.createGameSessionMutationOptions.onSuccess?.(
+        data,
+        variables,
+        onMutateResult,
+        context
+      );
+      setShowOverlay(true);
+
+      setTimeout(() => {
+        close();
+        setShowOverlay(false);
+        setSessionName('');
+        setParticipantIds([]);
+        setFormErrors({});
+      }, 2000);
+    },
+    onError: (error) => {
+      setShowOverlay(false);
+      showErrorNotification(ERROR_TITLES.GAME_SESSION_CREATION, error.message);
+    },
+  });
 
   const handleCreationGameSession = async () => {
     const errors = validateData();
@@ -68,31 +85,15 @@ export const CreateGameModal = ({
 
     if (Object.keys(errors).length !== 0) return;
 
-    openLoadingOverlay();
-    try {
-      await gameSessionApi.createGameSession(sessionName, user.uid, players);
-      setLoadingState('success');
-
-      setTimeout(() => {
-        closeLoadingOverlay();
-        close();
-        setLoadingState('idle');
-        setSessionName('');
-        setPlayers([]);
-        setFormErrors({});
-      }, 1500);
-    } catch {
-      setLoadingState('idle');
-      closeLoadingOverlay();
-    }
+    createGameSession.mutate({
+      sessionName,
+      hostId: user.id,
+      participantIds,
+    });
   };
 
   const handleSelectChange = (ids: string[]) => {
-    const selectedPlayers = ids.map((uid) => ({
-      id: userOptionsMap[uid].value,
-      displayName: userOptionsMap[uid].label,
-    }));
-    setPlayers(selectedPlayers);
+    setParticipantIds(Array.from(new Set([...ids, user.id])));
     setFormErrors({ ...formErrors, players: undefined });
   };
 
@@ -100,9 +101,9 @@ export const CreateGameModal = ({
     const errors: FormErrors = {};
 
     if (user.role !== 'host')
-      errors.notHost = 'Тільки ведучий можу створювати ігри';
+      errors.notHost = 'Тільки ведучий може створювати ігри';
     if (!sessionName) errors.sessionName = "Введіть ім'я ігрової сесії";
-    if (players.length === 0)
+    if (participantIds.length <= 1)
       errors.players = 'Додайте гравців до ігрової сесії';
     return errors;
   };
@@ -111,16 +112,15 @@ export const CreateGameModal = ({
     <Modal
       opened={opened}
       onClose={() => {
-        setPlayers([]);
+        setParticipantIds([]);
         close();
         setFormErrors({});
       }}
-      onEnterTransitionEnd={onEnterTransitionEnd}
       withCloseButton={false}
     >
       <Modal.Header>
         <LoadingOverlay
-          visible={visibleLoadingOverlay}
+          visible={showOverlay || createGameSession.isPending}
           loaderProps={{ children: ' ' }}
         />
 
@@ -129,16 +129,15 @@ export const CreateGameModal = ({
       </Modal.Header>
       <Modal.Body>
         <LoadingOverlay
-          visible={visibleLoadingOverlay}
+          visible={showOverlay || createGameSession.isPending}
           loaderProps={{
-            children:
-              loadingState === 'success' ? (
-                <ThemeIcon size="lg" radius="xl" color="lime">
-                  <Check />
-                </ThemeIcon>
-              ) : (
-                ''
-              ),
+            children: createGameSession.isSuccess ? (
+              <ThemeIcon size="lg" radius="xl" color="lime">
+                <Check />
+              </ThemeIcon>
+            ) : (
+              ''
+            ),
           }}
         />
         <TextInput
@@ -160,8 +159,10 @@ export const CreateGameModal = ({
           error={formErrors.players}
           nothingFoundMessage="Користувача з таким іменем не існує, або він уже обраний"
           onChange={handleSelectChange}
+          limit={10}
           hidePickedOptions
           searchable
+          clearable
         ></MultiSelect>
         {formErrors.notHost && (
           <Text c="red" size="sm" mb="sm">

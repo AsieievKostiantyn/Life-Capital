@@ -3,6 +3,11 @@ import { LOCALES } from './locales';
 export const messages = {
   [LOCALES.ENGLISH]: {
     logo: 'Life Capital',
+    'hero.title': 'Resource management simulator',
+    'hero.description':
+      'An open-source web application for delivering financial literacy training using the ‘Life Capital’ business game',
+    'hero.tryIt': 'Try it now',
+
     'button.signIn': 'Sign In',
     'auth.welcome': 'Welcome',
     'auth.continueWith': 'Continue with',
@@ -44,6 +49,11 @@ export const messages = {
   },
   [LOCALES.UKRAINIAN]: {
     logo: 'Життєвий капітал',
+    'hero.title': 'Симульятор управління ресурсами',
+    'hero.description':
+      'Веб-додаток з відкритим кодом для проведення тренінгів з фінансової грамотності за допомогою бізнес-гри "Життєвий капітал"',
+    'hero.tryIt': 'Спробувати',
+
     'button.signIn': 'Увійти',
     'auth.welcome': 'Вітаємо',
     'auth.continueWith': 'Продовжити через',
@@ -89,6 +99,11 @@ export const messages = {
   },
   [LOCALES.GERMAN]: {
     logo: 'Life Capital',
+    'hero.title': 'Simulator für die ressourcenverwaltung',
+    'hero.description':
+      'Eine Open-Source-Webanwendung zur Durchführung von Schulungen zur Finanzkompetenz mithilfe des Wirtschaftsspiels „Lebenskapital“',
+    'hero.tryIt': 'Probieren',
+
     'button.signIn': 'Anmelden',
 
     'auth.welcome': 'Willkommen',

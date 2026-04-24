@@ -6,10 +6,25 @@ export const USER_ROUTES = {
   RULES: '/rules',
   MY_GAMES: '/games',
   PROFILE: '/profile',
-  GAME: '/games/:gameId',
+  GAME: '/games/:gameSessionId',
 } as const;
 
 export const GAME_ROUTES = {
   HOST_ROUTES: {},
-  PLAYER_ROUTES: {},
+  PLAYER_ROUTES: {
+    PLAYER_LEGEND: 'legend',
+    PLAYER_INCOMES: 'incomes',
+    PLAYER_EXPENSES: {
+      ROOT: 'expenses',
+      OVERVIEW: 'overview',
+      MY: 'my',
+    },
+    PLAYER_INVESTMENTS: {
+      ROOT: 'investments',
+      CURRENT: 'current',
+      MY: 'my',
+    },
+    PLAYER_AIRBAG: 'airbag',
+    PLAYER_NEWS: 'news',
+  },
 } as const;

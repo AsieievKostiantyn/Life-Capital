@@ -1,17 +1,19 @@
-import { signOut } from 'firebase/auth';
+import { useQuery } from '@tanstack/react-query';
 
-import { useAuth } from '@/features/auth';
-
-import { auth } from '@/shared/firebase';
+import { useAuthStrict } from '@/features/auth';
+import { userQueryOptions } from '@/features/user/query-options';
 
 export const HomePage = () => {
-  const { user, isLoading } = useAuth();
-  console.log(isLoading);
-  console.log(user);
+  const { signOut, user: authUser } = useAuthStrict();
+
+  const { data: user } = useQuery(
+    userQueryOptions.getUserByIdQueryOption(authUser.id)
+  );
+
   return (
     <>
       HomePage
-      <button onClick={() => signOut(auth)}> sign&nbsp;out</button>
+      <button onClick={signOut}> sign&nbsp;out</button>
       <h2 className="font-bold mt-4">
         {user?.email}, {user?.displayName}
       </h2>
