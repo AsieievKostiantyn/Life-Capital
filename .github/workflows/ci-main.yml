@@ -1,0 +1,13 @@
+name: CI main
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  security-check:
+    name: "Security check"
+    uses: ./.github/workflows/_ci-security-check.yml
+    secrets: inherit
