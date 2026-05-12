@@ -12,7 +12,7 @@ jobs:
           scan-type: fs
           scanners: vuln,secret
           severity: CRITICAL,HIGH
-          ignore-unfixed: true
+          ignore-unfixed: false
           exit-code: '0'
           format: sarif
           output: trivy.sarif
