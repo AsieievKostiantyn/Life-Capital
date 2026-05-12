@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: aquasecurity/trivy-action@0.36.0 # v0.36.0
+      - uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scanners: vuln,secret,misconfig
@@ -16,6 +16,6 @@ jobs:
           exit-code: '0'
           format: sarif
           output: trivy-results.sarif
-      - uses: github/codeql-action/upload-sarif@4.35.4 # v4.35.4
+      - uses: github/codeql-action/upload-sarif@v4.35.4
         with:
           sarif_file: trivy-results.sarif
