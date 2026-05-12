@@ -1,23 +1,100 @@
 on:
   workflow_call:
-  schedule:
-    - cron: "0 1 * * 1" # Monday 01:00 UTC
 
 jobs:
   trivy:
-    name: "Trivy (vuln + secret)"
+    name: "Trivy (vuln, secret, misconfig)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+      - uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scanners: vuln,secret,misconfig
           severity: CRITICAL,HIGH
           ignore-unfixed: true
-          exit-code: '0'
-          format: sarif
-          output: trivy-results.sarif
-      - uses: github/codeql-action/upload-sarif@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
-        with:
-          sarif_file: trivy-results.sarif
+          exit-code: 0
+          format: json
+          output: trivy-results.json
+
+      - name: Build report
+        id: build-report
+        run: |
+          set -uo pipefail
+
+          rows=$(jq -r '
+            (.Results // [])[] as $r |
+            (
+              ($r.Vulnerabilities // [])[] |
+              [.Severity, $r.Target, .VulnerabilityID, (.Title // .PkgName // "-"), (.FixedVersion // "-")]
+            ),
+            (
+              ($r.Secrets // [])[] |
+              [.Severity, ($r.Target + ":" + (.StartLine | tostring)), .RuleID, (.Title // "-"), "-"]
+            ),
+            (
+              ($r.Misconfigurations // [])[] |
+              [.Severity, $r.Target, .ID, (.Title // "-"), "-"]
+            )
+            | @tsv
+          ' trivy-results.json)
+
+          crit=$(printf '%s\n' "$rows" | grep -c '^CRITICAL' || true)
+          high=$(printf '%s\n' "$rows" | grep -c '^HIGH' || true)
+          total=$((crit + high))
+          limit=30
+
+          {
+            echo "<!-- trivy-report -->"
+            echo "### Trivy security scan"
+            echo ""
+            if [ "$total" -eq 0 ]; then
+              echo "✓ No findings (CRITICAL/HIGH · vuln + secret + misconfig)"
+            else
+              echo "**Summary:** ${crit} CRITICAL · ${high} HIGH"
+              echo ""
+              echo "| Severity | Target | ID | Title | Fixed in |"
+              echo "|---|---|---|---|---|"
+              printf '%s\n' "$rows" \
+                | sort -t$'\t' -k1,1r -k2,2 \
+                | head -n "$limit" \
+                | while IFS=$'\t' read -r sev tgt id title fix; do
+                    [ -z "$sev" ] && continue
+                    title=${title//|/\\|}
+                    echo "| ${sev} | \`${tgt}\` | ${id} | ${title} | ${fix} |"
+                  done
+              remaining=$((total - limit))
+              if [ "$remaining" -gt 0 ]; then
+                echo ""
+                echo "_… and ${remaining} more_"
+              fi
+            fi
+          } > report.md
+
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+
+          {
+            echo "body<<TRIVY_REPORT_EOF"
+            cat report.md
+            echo "TRIVY_REPORT_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Post PR comment
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          BODY: ${{ steps.build-report.outputs.body }}
+        run: |
+          set -euo pipefail
+
+          existing=$(gh api "repos/${REPO}/issues/${PR_NUMBER}/comments" --paginate \
+            --jq '[.[] | select(.body | contains("<!-- trivy-report -->"))][0].id')
+
+          if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+            jq -n --arg body "$BODY" '{body: $body}' \
+              | gh api -X PATCH "repos/${REPO}/issues/comments/${existing}" --input -
+          else
+            gh pr comment "${PR_NUMBER}" --body "${BODY}"
+          fi
