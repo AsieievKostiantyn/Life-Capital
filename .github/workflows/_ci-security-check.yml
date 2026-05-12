@@ -10,13 +10,12 @@ jobs:
       - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
-          scanners: vuln,secret
+          scanners: vuln,secret,misconfig
           severity: CRITICAL,HIGH
-          ignore-unfixed: false
+          ignore-unfixed: true
           exit-code: '0'
           format: sarif
-          output: trivy.sarif
+          output: trivy-results.sarif
       - uses: github/codeql-action/upload-sarif@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
         with:
-          sarif_file: trivy.sarif
-          category: trivy
+          sarif_file: trivy-results.sarif
