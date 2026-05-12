@@ -1,10 +1,6 @@
 on:
   workflow_call:
 
-permissions:
-  contents: read
-  security-events: write
-
 jobs:
   trivy:
     name: "Trivy (vuln + secret)"
