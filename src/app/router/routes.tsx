@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 
 import {
   GuestPage,
-  HomePage,
+  // HomePage,
   LoginPage,
   MyGamesPage,
   PasswordRecoveryPage,
@@ -16,9 +16,9 @@ import {
   PlayerMyExpensesPage,
   PlayerMyInvestmentsPage,
   PlayerNewsPage,
-  ProfilePage,
+  // ProfilePage,
   RegisterPage,
-  RulesPage,
+  // RulesPage,
   SessionInfoPage,
 } from '@/pages';
 
@@ -55,20 +55,20 @@ export const userRoutes = [
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <Navigate to={USER_ROUTES.MY_GAMES} replace />,
       },
-      {
-        path: USER_ROUTES.RULES,
-        element: <RulesPage />,
-      },
+      // {
+      //   path: USER_ROUTES.RULES,
+      //   element: <RulesPage />,
+      // },
       {
         path: USER_ROUTES.MY_GAMES,
         element: <MyGamesPage />,
       },
-      {
-        path: USER_ROUTES.PROFILE,
-        element: <ProfilePage />,
-      },
+      // {
+      //   path: USER_ROUTES.PROFILE,
+      //   element: <ProfilePage />,
+      // },
     ],
   },
   {
@@ -145,5 +145,5 @@ export const userRoutes = [
       },
     ],
   },
-  { path: '*', element: <Navigate to={USER_ROUTES.HOME} replace /> },
+  { path: '*', element: <Navigate to={USER_ROUTES.MY_GAMES} replace /> },
 ];

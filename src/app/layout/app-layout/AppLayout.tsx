@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
-import { Globe, LogOut, Moon, Settings, Sun } from 'lucide-react';
+import { Globe, LogOut, Moon, Sun } from 'lucide-react';
 
 import {
   ActionIcon,
@@ -23,8 +23,6 @@ import { useUserGameSessionStatus } from '@/features/game-session/hooks';
 import { useI18n } from '@/features/i18n';
 import { userQueryOptions } from '@/features/user/query-options';
 
-import { USER_ROUTES } from '@/shared/router';
-
 import GermanFlag from '@/static/images/svg/de.svg';
 import GreatBritainFlag from '@/static/images/svg/gb.svg';
 import UkrainianFlag from '@/static/images/svg/ua.svg';
@@ -38,7 +36,6 @@ export const AppLayout = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const i18n = useI18n();
   const { signOut, user: authUser } = useAuthStrict();
-  const navigate = useNavigate();
 
   const { data: user } = useQuery(
     userQueryOptions.getUserByIdQueryOption(authUser.id)
@@ -165,12 +162,12 @@ export const AppLayout = () => {
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Label>Додаток</Menu.Label>
-                <Menu.Item
+                {/* <Menu.Item
                   onClick={() => navigate(USER_ROUTES.PROFILE)}
                   leftSection={<Settings size={24} />}
                 >
                   Профіль
-                </Menu.Item>
+                </Menu.Item> */}
                 <Menu.Item
                   onClick={signOut}
                   color="red"

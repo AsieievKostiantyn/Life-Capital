@@ -66,7 +66,7 @@ export const Navbar = ({ links, close }: NavBarProps) => {
           <Divider my="md" />
           <MantineNavLink
             component={Link}
-            to={USER_ROUTES.HOME}
+            to={USER_ROUTES.MY_GAMES}
             label="На головну"
             leftSection={<House />}
             onClick={close}
