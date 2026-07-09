@@ -1,0 +1,13 @@
+{
+  "name": "poc-realtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Мінімальний PoC realtime на чистих WebSocket (ws) — кімната сесії, бланки гравців, ведучий бачить зміни наживо",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
