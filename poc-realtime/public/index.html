@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PoC realtime</title>
+    <style>
+      * { box-sizing: border-box; font-family: system-ui, sans-serif; }
+      body { margin: 0; padding: 24px; background: #0f1115; color: #e6e6e6; }
+      h1 { font-size: 18px; margin: 0 0 4px; }
+      .sub { color: #8b93a1; font-size: 13px; margin-bottom: 20px; }
+      .grid { display: flex; gap: 20px; flex-wrap: wrap; }
+      .card { background: #181b22; border: 1px solid #272b34; border-radius: 12px; padding: 16px; min-width: 280px; }
+      .card h2 { font-size: 15px; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
+      .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #21252e; }
+      .row label { color: #9aa3b2; font-size: 13px; }
+      .row input { width: 110px; background: #0f1115; border: 1px solid #2c313b; color: #e6e6e6; border-radius: 6px; padding: 5px 8px; text-align: right; }
+      .row .val { font-variant-numeric: tabular-nums; font-size: 14px; }
+      /* (C) Підсвітка: поле змінилось з останнього візиту ведучого */
+      .changed { background: #3a2f00; border-radius: 6px; animation: flash 0.5s; }
+      .changed .val { color: #ffd24a; font-weight: 600; }
+      @keyframes flash { from { background: #6b5500; } to { background: #3a2f00; } }
+      .by { font-size: 11px; color: #7da3ff; margin-left: 8px; }
+      button { background: #2b6cff; color: #fff; border: 0; border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
+      button.ghost { background: #21252e; color: #cbd2dc; }
+      .events { list-style: none; margin: 0; padding: 0; max-height: 200px; overflow: auto; }
+      .events li { padding: 6px 0; border-bottom: 1px solid #21252e; font-size: 13px; }
+      .events .e-by { color: #7da3ff; font-size: 11px; }
+      .presence { font-size: 12px; color: #7ee787; margin-bottom: 16px; }
+      .add { display: flex; gap: 8px; margin-top: 10px; }
+      .add input { flex: 1; background: #0f1115; border: 1px solid #2c313b; color: #e6e6e6; border-radius: 6px; padding: 6px 8px; }
+      .readonly { opacity: 0.85; }
+      .badge { font-size: 11px; background: #2c313b; color: #9aa3b2; border-radius: 20px; padding: 2px 8px; }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">PoC realtime</h1>
+    <div class="sub" id="subtitle"></div>
+    <div class="presence" id="presence">● підключення…</div>
+    <div class="grid" id="grid"></div>
+
+    <script>
+      // ---- Хто я? Беремо з URL: ?role=host  або  ?role=player&id=B ----
+      const params = new URLSearchParams(location.search);
+      const role = params.get('role') || 'host';
+      const myId = params.get('id'); // 'B' | 'C' | null
+
+      const FIELD_LABELS = {
+        cash: 'Готівка',
+        income: 'Дохід / міс',
+        expenses: 'Видатки / міс',
+        freeFunds: 'Вільні кошти',
+      };
+
+      document.getElementById('title').textContent =
+        role === 'host' ? '👁 Ведучий' : `✍ Гравець ${myId}`;
+      document.getElementById('subtitle').textContent =
+        role === 'host'
+          ? 'Бачиш усі бланки наживо. Жовтим підсвічено те, що змінилось з твого останнього "переглянуто".'
+          : `Редагуєш лише свій бланк (${myId}) і спільні події. Чужий бланк — лише для перегляду.`;
+
+      let state = null; // tables зі store
+      let hostLastSeen = { B: 0, C: 0, shared: 0 };
+
+      // ---- Нативний браузерний WebSocket. Жодних бібліотек на клієнті. ----
+      let ws;
+      function connect() {
+        ws = new WebSocket(`ws://${location.host}`);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ type: 'join', role, playerId: myId }));
+        };
+
+        ws.onmessage = (ev) => {
+          const msg = JSON.parse(ev.data);
+
+          if (msg.type === 'snapshot') {
+            // (reconnect-friendly) повний стан — малюємо з нуля
+            state = msg.tables;
+            hostLastSeen = msg.hostLastSeen;
+            render();
+          }
+          if (msg.type === 'patch') {
+            // (A) жива зміна поля
+            const f = state[msg.tableId].fields[msg.field];
+            f.value = msg.value;
+            f.updatedAt = msg.updatedAt;
+            f.updatedBy = msg.updatedBy;
+            render();
+          }
+          if (msg.type === 'event') {
+            state.shared.events.push(msg.event);
+            render();
+          }
+          if (msg.type === 'seen') {
+            hostLastSeen[msg.tableId] = msg.at; // підсвітка гасне
+            render();
+          }
+          if (msg.type === 'presence') {
+            document.getElementById('presence').textContent =
+              '● онлайн: ' + msg.online.join(', ');
+          }
+          if (msg.type === 'error') {
+            alert(msg.message);
+          }
+        };
+
+        // ---- Reconnect: сокет розірвався — пробуємо знову. ----
+        ws.onclose = () => {
+          document.getElementById('presence').textContent = '○ з’єднання втрачено, перепідключення…';
+          setTimeout(connect, 1000);
+        };
+      }
+      connect();
+
+      // ---- Малюємо UI ----
+      function render() {
+        if (!state) return;
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+
+        // Таблиці гравців B і C
+        for (const id of ['B', 'C']) {
+          grid.appendChild(renderPlayerTable(id, state[id]));
+        }
+        // Спільна таблиця подій
+        grid.appendChild(renderShared(state.shared));
+      }
+
+      function renderPlayerTable(id, table) {
+        const canEdit = role === 'player' && myId === id;
+        const card = document.createElement('div');
+        card.className = 'card' + (canEdit ? '' : ' readonly');
+
+        const head = document.createElement('h2');
+        head.innerHTML = `<span>${table.title}</span>` +
+          (canEdit ? '<span class="badge">редагуєш ти</span>'
+                   : role === 'host' ? `<button class="ghost" data-seen="${id}">переглянуто</button>`
+                                     : '<span class="badge">перегляд</span>');
+        card.appendChild(head);
+
+        for (const key of Object.keys(table.fields)) {
+          const f = table.fields[key];
+          const row = document.createElement('div');
+          row.className = 'row';
+          // (C) для ведучого: поле "нове", якщо змінене після останнього перегляду
+          const isNew = role === 'host' && f.updatedAt > (hostLastSeen[id] || 0);
+          if (isNew) row.className += ' changed';
+
+          const label = document.createElement('label');
+          label.textContent = FIELD_LABELS[key] || key;
+          row.appendChild(label);
+
+          if (canEdit) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = f.value;
+            input.onchange = () =>
+              ws.send(JSON.stringify({ type: 'update', tableId: id, field: key, value: input.value }));
+            row.appendChild(input);
+          } else {
+            const span = document.createElement('span');
+            span.className = 'val';
+            // атрибуція: хто змінив (видно ведучому й іншим)
+            span.innerHTML = `${f.value}` + (isNew && f.updatedBy ? `<span class="by">змінив ${f.updatedBy}</span>` : '');
+            row.appendChild(span);
+          }
+          card.appendChild(row);
+        }
+        return card;
+      }
+
+      function renderShared(table) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const isNew = role === 'host' && table.events.some((e) => e.at > (hostLastSeen.shared || 0));
+        const head = document.createElement('h2');
+        head.innerHTML = `<span>${table.title}</span>` +
+          (role === 'host' ? `<button class="ghost" data-seen="shared">переглянуто</button>`
+                           : '<span class="badge">пишуть усі</span>');
+        if (isNew) head.querySelector('span').style.color = '#ffd24a';
+        card.appendChild(head);
+
+        const ul = document.createElement('ul');
+        ul.className = 'events';
+        for (const e of table.events) {
+          const li = document.createElement('li');
+          const fresh = role === 'host' && e.at > (hostLastSeen.shared || 0);
+          if (fresh) li.classList.add('changed');
+          li.innerHTML = `${e.text} <span class="e-by">— гравець ${e.by}</span>`;
+          ul.appendChild(li);
+        }
+        card.appendChild(ul);
+
+        if (role === 'player') {
+          const add = document.createElement('div');
+          add.className = 'add';
+          const input = document.createElement('input');
+          input.placeholder = 'Нова подія…';
+          const btn = document.createElement('button');
+          btn.textContent = 'Додати';
+          const submit = () => {
+            if (!input.value.trim()) return;
+            ws.send(JSON.stringify({ type: 'addEvent', text: input.value.trim() }));
+            input.value = '';
+          };
+          btn.onclick = submit;
+          input.onkeydown = (e) => e.key === 'Enter' && submit();
+          add.append(input, btn);
+          card.appendChild(add);
+        }
+        return card;
+      }
+
+      // Делегування кліку по кнопках "переглянуто"
+      document.getElementById('grid').addEventListener('click', (e) => {
+        const id = e.target.getAttribute && e.target.getAttribute('data-seen');
+        if (id) ws.send(JSON.stringify({ type: 'markSeen', tableId: id }));
+      });
+    </script>
+  </body>
+</html>
